@@ -31,8 +31,8 @@ github.com/spf13/pflag v1.0.3/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnIn
 github.com/spf13/viper v1.3.2/go.mod h1:ZiWeW+zYFKm7srdB9IoDzzZXaJaI5eL9QjNiN/DMA2s=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
-github.com/transchain/sdk-go v1.0.0 h1:7Vt6SfcOSSo3yiitQMSHKY7hnpd/qI0/OGGhgsqpmBc=
-github.com/transchain/sdk-go v1.0.0/go.mod h1:Qe1BlJLBvTlLDDnq2gdJIlGA1R31q2hVl9eLVDXin6E=
+github.com/transchain/sdk-go v1.0.2 h1:t7dDxzxC7TFE7QdrQ9CCscaTaaRK/uYvk3jJZhPTT44=
+github.com/transchain/sdk-go v1.0.2/go.mod h1:Qe1BlJLBvTlLDDnq2gdJIlGA1R31q2hVl9eLVDXin6E=
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
