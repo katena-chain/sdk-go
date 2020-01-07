@@ -22,7 +22,7 @@ const (
 // CertificateRawV1 is the first version of a raw certificate.
 type CertificateRawV1 struct {
     Id    string `json:"id" validate:"required,bcid"`
-    Value []byte `json:"value" validate:"required,max=128"`
+    Value []byte `json:"value" validate:"required,min=1,max=128"`
 }
 
 // GetType returns the type string representation.

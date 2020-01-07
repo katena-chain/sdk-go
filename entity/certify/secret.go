@@ -23,7 +23,7 @@ type SecretNaclBoxV1 struct {
     Id      string         `json:"id" validate:"required,bcid"`
     Sender  nacl.PublicKey `json:"sender" validate:"required,len=32"`
     Nonce   nacl.BoxNonce  `json:"nonce" validate:"required,len=24"`
-    Content []byte         `json:"content" validate:"required,max=128"`
+    Content []byte         `json:"content" validate:"required,min=1,max=128"`
 }
 
 // GetType returns the type string representation.
