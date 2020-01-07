@@ -24,7 +24,7 @@ func main() {
     aliceCompanyChainId := "abcdef"
 
     // Create a Katena API helper
-    transactor := client.NewTransactor(apiUrl, "", "", nil, )
+    transactor := client.NewTransactor(apiUrl, "", "", nil)
 
     // Certificate uuid Alice wants to retrieve
     certificateUuid := "2075c941-6876-405b-87d5-13791c0dc53a"
