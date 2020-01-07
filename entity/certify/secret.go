@@ -20,7 +20,7 @@ const (
 
 // SecretNaclBoxV1 is the first version of a nacl box secret.
 type SecretNaclBoxV1 struct {
-    Id      string         `json:"id" validate:"required,bcid"`
+    Id      string         `json:"id" validate:"required,txid"`
     Sender  nacl.PublicKey `json:"sender" validate:"required,len=32"`
     Nonce   nacl.BoxNonce  `json:"nonce" validate:"required,len=24"`
     Content []byte         `json:"content" validate:"required,min=1,max=128"`

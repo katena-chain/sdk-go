@@ -21,7 +21,7 @@ const (
 
 // CertificateRawV1 is the first version of a raw certificate.
 type CertificateRawV1 struct {
-    Id    string `json:"id" validate:"required,bcid"`
+    Id    string `json:"id" validate:"required,txid"`
     Value []byte `json:"value" validate:"required,min=1,max=128"`
 }
 
@@ -47,7 +47,7 @@ func (c CertificateRawV1) GetSubNamespace() string {
 
 // CertificateEd25519V1 is the first version of an ed25519 certificate.
 type CertificateEd25519V1 struct {
-    Id        string            `json:"id" validate:"required,bcid"`
+    Id        string            `json:"id" validate:"required,txid"`
     Signer    ed25519.PublicKey `json:"signer" validate:"required,len=32"`
     Signature ed25519.Signature `json:"signature" validate:"required,len=64"`
 }

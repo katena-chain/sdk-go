@@ -16,8 +16,8 @@ const (
     NamespaceCertify = "certify"
 )
 
-// SplitBcid separates a bcid field into a company chain id and a uuid.
-func SplitBcid(id string) (string, string) {
+// SplitTxid separates a txid field into a company chain id and a uuid.
+func SplitTxid(id string) (string, string) {
     split := strings.SplitN(id, "-", 2)
     if len(split) < 2 {
         return "", ""
@@ -25,7 +25,7 @@ func SplitBcid(id string) (string, string) {
     return split[0], split[1]
 }
 
-// FormatBcid concatenates a company chain id and a uuid into a bcid.
-func FormatBcid(companyChainId string, uuid string) string {
+// FormatTxid concatenates a company chain id and a uuid into a txid.
+func FormatTxid(companyChainId string, uuid string) string {
     return fmt.Sprintf("%s-%s", companyChainId, uuid)
 }

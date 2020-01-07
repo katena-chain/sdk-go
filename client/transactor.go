@@ -41,7 +41,7 @@ func NewTransactor(apiUrl string, chainId string, companyChainId string, txSigne
 // SendCertificateRawV1 creates a CertificateRaw (V1), wraps it in a tx and sends it to the API.
 func (t Transactor) SendCertificateRawV1(uuid string, value []byte) (*entityApi.TxStatus, error) {
     certificate := certify.CertificateRawV1{
-        Id:    certify.FormatBcid(t.companyChainId, uuid),
+        Id:    certify.FormatTxid(t.companyChainId, uuid),
         Value: value,
     }
     tx, err := t.GetTx(certificate)
@@ -58,7 +58,7 @@ func (t Transactor) SendCertificateEd25519V1(
     signature ed25519.Signature,
 ) (*entityApi.TxStatus, error) {
     certificate := certify.CertificateEd25519V1{
-        Id:        certify.FormatBcid(t.companyChainId, uuid),
+        Id:        certify.FormatTxid(t.companyChainId, uuid),
         Signer:    signer,
         Signature: signature,
     }
@@ -71,12 +71,12 @@ func (t Transactor) SendCertificateEd25519V1(
 
 // RetrieveCertificate fetches the API to find the corresponding tx and returns a tx wrapper or an error.
 func (t Transactor) RetrieveCertificate(companyChainId string, uuid string) (*entityApi.TxWrapper, error) {
-    return t.apiHandler.RetrieveCertificate(certify.FormatBcid(companyChainId, uuid))
+    return t.apiHandler.RetrieveCertificate(certify.FormatTxid(companyChainId, uuid))
 }
 
 // RetrieveCertificatesHistory fetches the API to find the corresponding txs and returns tx wrappers or an error.
 func (t Transactor) RetrieveCertificatesHistory(companyChainId string, uuid string) (*entityApi.TxWrappers, error) {
-    return t.apiHandler.RetrieveCertificatesHistory(certify.FormatBcid(companyChainId, uuid))
+    return t.apiHandler.RetrieveCertificatesHistory(certify.FormatTxid(companyChainId, uuid))
 }
 
 // SendSecretNaclBoxV1 creates a SecretNaclBox (V1), wraps it in a tx and sends it to the API.
@@ -87,7 +87,7 @@ func (t Transactor) SendSecretNaclBoxV1(
     content []byte,
 ) (*entityApi.TxStatus, error) {
     secret := certify.SecretNaclBoxV1{
-        Id:      certify.FormatBcid(t.companyChainId, uuid),
+        Id:      certify.FormatTxid(t.companyChainId, uuid),
         Sender:  sender,
         Nonce:   nonce,
         Content: content,
@@ -101,7 +101,7 @@ func (t Transactor) SendSecretNaclBoxV1(
 
 // RetrieveSecrets fetches the API to find the corresponding txs and returns tx wrappers or an error.
 func (t Transactor) RetrieveSecrets(companyChainId string, uuid string) (*entityApi.TxWrappers, error) {
-    return t.apiHandler.RetrieveSecrets(certify.FormatBcid(companyChainId, uuid))
+    return t.apiHandler.RetrieveSecrets(certify.FormatTxid(companyChainId, uuid))
 }
 
 // GetTx signs a tx data and returns a new tx ready to be sent.
