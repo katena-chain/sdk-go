@@ -33,16 +33,27 @@ type TxStatus struct {
     Code    uint32 `json:"code"`
     Message string `json:"message"`
 }
-
-// Error allows to wrap API errors.
-type Error struct {
-    Code    uint32 `json:"code"`
-    Message string `json:"message"`
+// PublicError allows to wrap API errors.
+type PublicError struct {
+    Codespace string `json:"codespace,omitempty"`
+    Code      uint32 `json:"code"`
+    Message   string `json:"message"`
 }
 
-// Error returns the error formatted as a string (error interface requirement).
-func (e Error) Error() string {
-    return fmt.Sprintf(`api error:
-  Code    : %d
-  Message : %s`, e.Code, e.Message)
+// PublicError constructor.
+func NewPublicError(codespace string, code uint32, message string) *PublicError {
+    return &PublicError{
+        Codespace: codespace,
+        Code:      code,
+        Message:   message,
+    }
+}
+
+// PublicError returns the error formatted as a string (error interface requirement).
+func (pe PublicError) Error() string {
+    return fmt.Sprintf(`ERROR:
+Codespace: %s
+Code: %d
+Message: %s
+`, pe.Codespace, pe.Code, pe.Message)
 }

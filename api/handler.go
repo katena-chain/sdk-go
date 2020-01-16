@@ -199,7 +199,7 @@ func unmarshalApiResponse(apiResponse *api.RawResponse, dest interface{}) error 
         }
         return nil
     } else {
-        var apiError entityApi.Error
+        var apiError entityApi.PublicError
         if err := json.Unmarshal(apiResponse.Body, &apiError); err != nil {
             return err
         }
