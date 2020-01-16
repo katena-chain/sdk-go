@@ -11,6 +11,7 @@ import (
     "errors"
     "time"
 
+    "github.com/google/uuid"
     "github.com/transchain/sdk-go/crypto/ed25519"
     "github.com/transchain/sdk-go/crypto/nacl"
 
@@ -142,4 +143,8 @@ func (t Transactor) getCurrentNonceTime() entity.Time {
     return entity.Time{
         Time: time.Now(),
     }
+}
+
+func (t Transactor) GenerateUuidV4() string {
+    return uuid.New().String()
 }
