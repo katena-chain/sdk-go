@@ -13,6 +13,7 @@ import (
 
     "github.com/transchain/sdk-go/crypto/nacl"
 
+    "github.com/katena-chain/sdk-go/api"
     "github.com/katena-chain/sdk-go/client"
     "github.com/katena-chain/sdk-go/entity/certify"
 )
@@ -40,7 +41,7 @@ func main() {
     secretUuid := "2075c941-6876-405b-87d5-13791c0dc53a"
 
     // Retrieve version 1 of secrets from Katena
-    txWrappers, err := transactor.RetrieveSecrets(aliceCompanyChainId, secretUuid)
+    txWrappers, err := transactor.RetrieveSecrets(aliceCompanyChainId, secretUuid, 1, api.DefaultPerPageParam)
     if err != nil {
         panic(err)
     }

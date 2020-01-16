@@ -16,6 +16,7 @@ import (
     "github.com/transchain/sdk-go/crypto/ed25519"
     kcJson "github.com/transchain/sdk-go/json"
 
+    "github.com/katena-chain/sdk-go/entity/account"
     "github.com/katena-chain/sdk-go/entity/certify"
 )
 
@@ -23,6 +24,8 @@ var AvailableTxDataTypes = map[string]reflect.Type{
     certify.GetTypeCertificateRawV1():     reflect.TypeOf(certify.CertificateRawV1{}),
     certify.GetTypeCertificateEd25519V1(): reflect.TypeOf(certify.CertificateEd25519V1{}),
     certify.GetTypeSecretNaclBoxV1():      reflect.TypeOf(certify.SecretNaclBoxV1{}),
+    account.GetTypeKeyCreateV1():          reflect.TypeOf(account.KeyCreateV1{}),
+    account.GetTypeKeyRevokeV1():          reflect.TypeOf(account.KeyRevokeV1{}),
 }
 
 // Tx wraps a tx data with its signature information and a nonce time to avoid replay attacks.

@@ -12,11 +12,11 @@ import (
 
     "github.com/katena-chain/sdk-go/api"
     "github.com/katena-chain/sdk-go/client"
-    "github.com/katena-chain/sdk-go/entity/certify"
+    "github.com/katena-chain/sdk-go/entity/account"
 )
 
 func main() {
-    // Alice wants to retrieve a certificate history
+    // Alice wants to retrieve a certificate
 
     // Common Katena network information
     apiUrl := "https://api.test.katena.transchain.io/api/v1"
@@ -27,15 +27,14 @@ func main() {
     // Create a Katena API helper
     transactor := client.NewTransactor(apiUrl, "", "", nil)
 
-    // Certificate uuid Alice wants to retrieve
-    certificateUuid := "2075c941-6876-405b-87d5-13791c0dc53a"
+    // KeyRevoke uuid Alice wants to retrieve
+    keyRevokeUuid := "f4866d77-a083-4ecb-9ec0-a2a152b6ce14"
 
-    // Retrieve a version 1 of a certificate history from Katena
-    txWrappers, err := transactor.RetrieveCertificatesHistory(aliceCompanyChainId, certificateUuid, 1, api.DefaultPerPageParam)
+    // Retrieve a version 1 of a KeyRevoke from Katena
+    txWrappers, err := transactor.RetrieveKeysRevoke(aliceCompanyChainId, keyRevokeUuid, 1, api.DefaultPerPageParam)
     if err != nil {
         panic(err)
     }
-
     for _, txWrapper := range txWrappers.Txs {
         txData := txWrapper.Tx.Data
 
@@ -45,16 +44,10 @@ func main() {
         fmt.Println(fmt.Sprintf("  NonceTime : %s", txWrapper.Tx.NonceTime))
 
         switch txData := txData.(type) {
-        case *certify.CertificateRawV1:
-            fmt.Println("CertificateRawV1")
-            fmt.Println(fmt.Sprintf("  Id    : %s", txData.Id))
-            fmt.Println(fmt.Sprintf("  Value : %s", txData.Value))
-            break
-        case *certify.CertificateEd25519V1:
-            fmt.Println("CertificateEd25519V1")
-            fmt.Println(fmt.Sprintf("  Id             : %s", txData.Id))
-            fmt.Println(fmt.Sprintf("  Data signer    : %s", txData.Signer))
-            fmt.Println(fmt.Sprintf("  Data signature : %s", txData.Signature))
+        case *account.KeyRevokeV1:
+            fmt.Println("KeyRevokeV1")
+            fmt.Println(fmt.Sprintf("  Id : %s", txData.Id))
+            fmt.Println(fmt.Sprintf("  PublicKey : %s", txData.PublicKey))
             break
         default:
             panic("Unexpected txData type")

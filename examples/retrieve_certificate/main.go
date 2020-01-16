@@ -39,6 +39,7 @@ func main() {
     fmt.Println("Transaction status")
     fmt.Println(fmt.Sprintf("  Code    : %d", txWrapper.Status.Code))
     fmt.Println(fmt.Sprintf("  Message : %s", txWrapper.Status.Message))
+    fmt.Println(fmt.Sprintf("  NonceTime : %s", txWrapper.Tx.NonceTime))
 
     switch txData := txData.(type) {
     case *certify.CertificateRawV1:
