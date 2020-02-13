@@ -14,11 +14,6 @@ import (
     kcJson "github.com/transchain/sdk-go/json"
 )
 
-const (
-    TypeCreate = "create"
-    TypeRevoke = "revoke"
-)
-
 // TxData interface defines the methods a concrete TxData must implement.
 type TxData interface {
     GetId() string

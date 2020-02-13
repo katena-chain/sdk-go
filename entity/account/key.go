@@ -5,7 +5,7 @@ import (
 
     "github.com/transchain/sdk-go/crypto/ed25519"
 
-    "github.com/katena-chain/sdk-go/entity"
+    "github.com/katena-chain/sdk-go/entity/common"
 )
 
 const (
@@ -76,7 +76,7 @@ func GetTypeKeyCreateV1() string {
 
 // GetCategoryKeyCreate returns the key create category.
 func GetCategoryKeyCreate() string {
-    return fmt.Sprintf("%s.%s.%s", Namespace, TypeKey, entity.TypeCreate)
+    return fmt.Sprintf("%s.%s.%s", Namespace, TypeKey, common.TypeCreate)
 }
 
 // KeyRevokeV1 is the first version of a key revoke message.
@@ -120,5 +120,5 @@ func GetTypeKeyRevokeV1() string {
 
 // GetCategoryKeyRevoke returns the key revoke category.
 func GetCategoryKeyRevoke() string {
-    return fmt.Sprintf("%s.%s.%s", Namespace, TypeKey, entity.TypeRevoke)
+    return fmt.Sprintf("%s.%s.%s", Namespace, TypeKey, common.TypeRevoke)
 }
