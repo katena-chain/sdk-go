@@ -25,10 +25,7 @@ func main() {
     // Alice Katena network information
     aliceSignPrivateKeyBase64 := "7C67DeoLnhI6jvsp3eMksU2Z6uzj8sqZbpgwZqfIyuCZbfoPcitCiCsSp2EzCfkY52Mx58xDOyQLb1OhC7cL5A=="
     aliceCompanyChainId := "abcdef"
-    aliceSignPrivateKey, err := ed25519.NewPrivateKeyFromBase64(aliceSignPrivateKeyBase64)
-    if err != nil {
-        panic(err)
-    }
+    aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignPrivateKeyBase64)
 
     // Create a Katena API helper
     transactor := client.NewTransactor(apiUrl, chainId, aliceCompanyChainId, &aliceSignPrivateKey)
@@ -46,5 +43,4 @@ func main() {
     fmt.Println("Transaction status")
     fmt.Println(fmt.Sprintf("  Code    : %d", txStatus.Code))
     fmt.Println(fmt.Sprintf("  Message : %s", txStatus.Message))
-
 }

@@ -10,7 +10,8 @@ package main
 import (
     "fmt"
 
-    "github.com/katena-chain/sdk-go/api"
+    "github.com/transchain/sdk-go/api"
+
     "github.com/katena-chain/sdk-go/client"
     "github.com/katena-chain/sdk-go/entity/certify"
 )

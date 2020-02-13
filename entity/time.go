@@ -23,3 +23,10 @@ type Time struct {
 func (t Time) MarshalJSON() ([]byte, error) {
     return json.Marshal(t.Time.UTC().Truncate(time.Microsecond).Format(RFC3339MicroZeroPadded))
 }
+
+// GetCurrentTime returns a well formatted custom time.Now()
+func GetCurrentTime() Time {
+    return Time{
+        Time: time.Now().UTC().Truncate(time.Microsecond),
+    }
+}

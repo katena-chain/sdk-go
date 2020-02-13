@@ -7,20 +7,6 @@
 
 package certify
 
-import (
-    "fmt"
-
-    "github.com/katena-chain/sdk-go/entity/common"
-)
-
 const (
-    NamespaceCertify = "certify"
+    Namespace = "certify"
 )
-
-func GetQueryCertifyCertificateID() string {
-    return fmt.Sprintf("%s.%s", GetCertificateSubNamespace(), common.AttributeId)
-}
-
-func GetQueryCertifySecretID() string {
-    return fmt.Sprintf("%s.%s", GetSecretSubNamespace(), common.AttributeId)
-}

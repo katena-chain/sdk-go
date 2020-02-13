@@ -81,35 +81,9 @@ func (a *Tx) UnmarshalJSON(data []byte) error {
         }
         a.Data = txData.(TxData)
     } else {
-        return errors.New(fmt.Sprintf("unknown certificate type: %s", jsonTx.Data.Type))
+        return errors.New(fmt.Sprintf("unknown tx data type: %s", jsonTx.Data.Type))
     }
     return nil
 }
 
-// TxData interface defines the methods a concrete TxData must implement.
-type TxData interface {
-    GetType() string
-    GetId() string
-    GetNamespace() string
-    GetSubNamespace() string
-}
 
-// txDataState wraps a TxData and additional values in order to define the unique state to be signed.
-type txDataState struct {
-    ChainId   string                `json:"chain_id"`
-    NonceTime Time                  `json:"nonce_time"`
-    Data      kcJson.MarshalWrapper `json:"data"`
-}
-
-// GetTxDataStateBytes returns the sorted and marshaled json representation of a TxData ready to be signed.
-func GetTxDataStateBytes(chainId string, nonceTime Time, txData TxData) []byte {
-    data := txDataState{
-        ChainId:   chainId,
-        NonceTime: nonceTime,
-        Data: kcJson.MarshalWrapper{
-            Type:  txData.GetType(),
-            Value: txData,
-        },
-    }
-    return kcJson.MustMarshalAndSortJSON(data)
-}

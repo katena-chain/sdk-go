@@ -26,22 +26,13 @@ func main() {
     // Alice Katena network information
     aliceSignPrivateKeyBase64 := "7C67DeoLnhI6jvsp3eMksU2Z6uzj8sqZbpgwZqfIyuCZbfoPcitCiCsSp2EzCfkY52Mx58xDOyQLb1OhC7cL5A=="
     aliceCompanyChainId := "abcdef"
-    aliceSignPrivateKey, err := ed25519.NewPrivateKeyFromBase64(aliceSignPrivateKeyBase64)
-    if err != nil {
-        panic(err)
-    }
+    aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignPrivateKeyBase64)
 
     // Nacl box information
     aliceCryptPrivateKeyBase64 := "nyCzhimWnTQifh6ucXLuJwOz3RgiBpo33LcX1NjMAsP1ZkQcdlDq64lTwxaDx0lq6LCQAUeYywyMUtfsvTUEeQ=="
-    aliceCryptPrivateKey, err := nacl.NewPrivateKeyFromBase64(aliceCryptPrivateKeyBase64)
-    if err != nil {
-        panic(err)
-    }
+    aliceCryptPrivateKey := nacl.NewPrivateKeyFromBase64(aliceCryptPrivateKeyBase64)
     bobCryptPublicKeyBase64 := "KiT9KIwaHOMELcqtPMsMVJLE5Hc9P60DZDrBGQcKlk8="
-    bobCryptPublicKey, err := nacl.NewPublicKeyFromBase64(bobCryptPublicKeyBase64)
-    if err != nil {
-        panic(err)
-    }
+    bobCryptPublicKey := nacl.NewPublicKeyFromBase64(bobCryptPublicKeyBase64)
 
     // Create a Katena API helper
     transactor := client.NewTransactor(apiUrl, chainId, aliceCompanyChainId, &aliceSignPrivateKey)

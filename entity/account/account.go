@@ -1,20 +1,12 @@
+/**
+ * Copyright (c) 2018, TransChain.
+ *
+ * This source code is licensed under the Apache 2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package account
-
-import (
-    "fmt"
-
-    "github.com/katena-chain/sdk-go/entity/common"
-)
 
 const (
     Namespace = "account"
 )
-
-
-func GetQueryKeyCreateID() string {
-    return fmt.Sprintf("%s.%s", GetKeyCreateSubNamespace(), common.AttributeId)
-}
-
-func GetQueryKeyRevokeID() string {
-    return fmt.Sprintf("%s.%s", GetKeyRevokeSubNamespace(), common.AttributeId)
-}

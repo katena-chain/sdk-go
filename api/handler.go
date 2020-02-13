@@ -11,25 +11,23 @@ import (
     "encoding/json"
     "errors"
     "fmt"
-    "strconv"
 
     "github.com/transchain/sdk-go/api"
     "github.com/transchain/sdk-go/crypto/ed25519"
     "github.com/valyala/fasthttp"
 
     "github.com/katena-chain/sdk-go/entity"
+    "github.com/katena-chain/sdk-go/entity/account"
     entityApi "github.com/katena-chain/sdk-go/entity/api"
 )
 
 const (
-    routeCertificates = "certificates"
-    routeSecrets      = "secrets"
-    pathHistory       = "history"
-    routeTxs          = "txs"
-
-    PageParam           = "page"
-    PerPageParam        = "per_page"
-    DefaultPerPageParam = 10
+    CertificatesPath = "/certificates"
+    SecretsPath      = "/secrets"
+    HistoryPath      = "/history"
+    TxsPath          = "/txs"
+    CompaniesPath    = "/companies"
+    KeysPath         = "/keys"
 )
 
 // Handler provides helper methods to send and retrieve txs without directly interacting with the HTTP Client.
@@ -44,9 +42,22 @@ func NewHandler(apiUrl string) *Handler {
     }
 }
 
+// SendTx accepts an encoded tx and sends it to the Api to return a tx status or an error.
+func (h *Handler) SendTx(txBytes []byte) (*entityApi.TxStatus, error) {
+    apiResponse, err := h.SafePost(TxsPath, txBytes)
+    if err != nil {
+        return nil, err
+    }
+    var txStatus entityApi.TxStatus
+    if err := unmarshalApiResponse(apiResponse, &txStatus); err != nil {
+        return nil, err
+    }
+    return &txStatus, nil
+}
+
 // RetrieveCertificate fetches the API and returns a tx wrapper or an error.
 func (h *Handler) RetrieveCertificate(id string) (*entityApi.TxWrapper, error) {
-    apiResponse, err := h.query(fmt.Sprintf("%s/%s", routeCertificates, id), map[string]string{})
+    apiResponse, err := h.SafeGet(fmt.Sprintf("%s/%s", CertificatesPath, id), nil)
     if err != nil {
         return nil, err
     }
@@ -58,13 +69,10 @@ func (h *Handler) RetrieveCertificate(id string) (*entityApi.TxWrapper, error) {
     return &txWrapper, nil
 }
 
-// RetrieveCertificatesHistory fetches the API and returns tx wrappers or an error.
+// RetrieveCertificatesHistory fetches the API and returns a tx wrapper list or an error.
 func (h *Handler) RetrieveCertificatesHistory(id string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
-    queryParams := map[string]string{
-        PageParam:    strconv.Itoa(page),
-        PerPageParam: strconv.Itoa(txPerPage),
-    }
-    apiResponse, err := h.query(fmt.Sprintf("%s/%s/%s", routeCertificates, id, pathHistory), queryParams)
+    queryParams := api.GetPaginationQueryParams(page, txPerPage)
+    apiResponse, err := h.SafeGet(fmt.Sprintf("%s/%s%s", CertificatesPath, id, HistoryPath), queryParams)
     if err != nil {
         return nil, err
     }
@@ -78,11 +86,8 @@ func (h *Handler) RetrieveCertificatesHistory(id string, page int, txPerPage int
 
 // RetrieveSecrets fetches the API and returns a tx wrapper list or an error.
 func (h *Handler) RetrieveSecrets(id string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
-    queryParams := map[string]string{
-        PageParam:    strconv.Itoa(page),
-        PerPageParam: strconv.Itoa(txPerPage),
-    }
-    apiResponse, err := h.query(fmt.Sprintf("%s/%s", routeSecrets, id), queryParams)
+    queryParams := api.GetPaginationQueryParams(page, txPerPage)
+    apiResponse, err := h.SafeGet(fmt.Sprintf("%s/%s", SecretsPath, id), queryParams)
     if err != nil {
         return nil, err
     }
@@ -93,36 +98,30 @@ func (h *Handler) RetrieveSecrets(id string, page int, txPerPage int) (*entityAp
     return &txWrappers, nil
 }
 
-func (h *Handler) GetTx(queryKey string, id string) (*entityApi.TxWrapper, error) {
-    txWrappers, err := h.queryTxs(queryKey, id, 1, DefaultPerPageParam)
+// RetrieveTx fetches the API and returns a tx wrapper or an error.
+func (h *Handler) RetrieveTx(txCategory string, id string) (*entityApi.TxWrapper, error) {
+    txWrappers, err := h.RetrieveTxs(txCategory, id, 1, api.DefaultPerPageParam)
     if err != nil {
         return nil, err
     }
 
     // Calculate the last page
-    if txWrappers.Total > DefaultPerPageParam {
-        pageToFetch := (txWrappers.Total / DefaultPerPageParam) + 1
-        txWrappers, err = h.queryTxs(queryKey, id, int(pageToFetch), DefaultPerPageParam)
+    if txWrappers.Total > api.DefaultPerPageParam {
+        pageToFetch := api.GetNumPage(api.DefaultPerPageParam, int(txWrappers.Total))
+        txWrappers, err = h.RetrieveTxs(txCategory, id, pageToFetch, api.DefaultPerPageParam)
         if err != nil {
             return nil, err
         }
     }
 
-    // Decode ResultTxSearch
     lastTx := txWrappers.Txs[len(txWrappers.Txs)-1]
     return lastTx, nil
 }
 
-func (h *Handler) GetTxs(queryKey string, id string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
-    return h.queryTxs(queryKey, id, page, txPerPage)
-}
-
-func (h *Handler) queryTxs(queryKey string, queryValue string, page int, txPerPage int) (_ *entityApi.TxWrappers, katenaError error) {
-    queryParams := map[string]string{
-        PageParam:    strconv.Itoa(page),
-        PerPageParam: strconv.Itoa(txPerPage),
-    }
-    apiResponse, err := h.query(fmt.Sprintf("%s/%s/%s", routeTxs, queryKey, queryValue), queryParams)
+// RetrieveTxs fetches the API and returns a tx wrapper list or an error.
+func (h *Handler) RetrieveTxs(txCategory string, id string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
+    queryParams := api.GetPaginationQueryParams(page, txPerPage)
+    apiResponse, err := h.SafeGet(fmt.Sprintf("%s/%s/%s", TxsPath, txCategory, id), queryParams)
     if err != nil {
         return nil, err
     }
@@ -135,7 +134,23 @@ func (h *Handler) queryTxs(queryKey string, queryValue string, page int, txPerPa
     return &txWrappers, nil
 }
 
-func (h *Handler) query(route string, queryParams map[string]string) (_ *api.RawResponse, katenaError error) {
+// RetrieveCompanyKeys fetches the API and returns the list of keyV1 for a company.
+func (h *Handler) RetrieveCompanyKeys(companyBcid string, page int, txPerPage int) ([]*account.KeyV1, error) {
+    queryParams := api.GetPaginationQueryParams(page, txPerPage)
+    apiResponse, err := h.SafeGet(fmt.Sprintf("%s/%s%s", CompaniesPath, companyBcid, KeysPath), queryParams)
+    if err != nil {
+        return nil, err
+    }
+
+    var keys []*account.KeyV1
+    if err := unmarshalApiResponse(apiResponse, &keys); err != nil {
+        return nil, err
+    }
+    return keys, nil
+}
+
+// SafePost calls the api handler post method and recover if it panics.
+func (h *Handler) SafePost(route string, body []byte) (_ *api.RawResponse, katenaError error) {
     defer func() {
         if r := recover(); r != nil {
             var ok bool
@@ -147,10 +162,26 @@ func (h *Handler) query(route string, queryParams map[string]string) (_ *api.Raw
             }
         }
     }()
+    return h.apiClient.Post(route, body, nil, nil)
+}
 
+// SafeGet calls the api handler get method and recover if it panics.
+func (h *Handler) SafeGet(route string, queryParams map[string]string) (_ *api.RawResponse, katenaError error) {
+    defer func() {
+        if r := recover(); r != nil {
+            var ok bool
+            err, ok := r.(error)
+            if !ok {
+                katenaError = errors.New(fmt.Sprintf("%v", r))
+            } else {
+                katenaError = err
+            }
+        }
+    }()
     return h.apiClient.Get(route, nil, queryParams)
 }
 
+// SignTx creates a tx data state, signs it and returns a tx ready to encode and send.
 func (h *Handler) SignTx(privateKey *ed25519.PrivateKey, chainId string, nonceTime entity.Time, txData entity.TxData) *entity.Tx {
     txDataState := entity.GetTxDataStateBytes(chainId, nonceTime, txData)
     signature := privateKey.Sign(txDataState)
@@ -163,35 +194,13 @@ func (h *Handler) SignTx(privateKey *ed25519.PrivateKey, chainId string, nonceTi
     }
 }
 
+// EncodeTx defines the way the tx is encoded (here with the json marshaller).
 func (h *Handler) EncodeTx(tx *entity.Tx) ([]byte, error) {
     return json.Marshal(tx)
 }
 
-func (h *Handler) SendTx(txBytes []byte) (_ *entityApi.TxStatus, katenaError error) {
-    defer func() {
-        if r := recover(); r != nil {
-            var ok bool
-            err, ok := r.(error)
-            if !ok {
-                katenaError = errors.New(fmt.Sprintf("%v", r))
-            } else {
-                katenaError = err
-            }
-        }
-    }()
-
-    apiResponse, err := h.apiClient.Post(routeTxs, txBytes, nil, nil)
-    if err != nil {
-        return nil, err
-    }
-    var txStatus entityApi.TxStatus
-    if err := unmarshalApiResponse(apiResponse, &txStatus); err != nil {
-        return nil, err
-    }
-    return &txStatus, nil
-}
-
-// unmarshalApiResponse tries to parse the api response body if the API returns a 2xx HTTP code.
+// unmarshalApiResponse tries to parse the api response body into the provided interface if the API returns a 200 or a
+// 202 HTTP code. If not, it tries to parse it in a PublicError.
 func unmarshalApiResponse(apiResponse *api.RawResponse, dest interface{}) error {
     if apiResponse.StatusCode == fasthttp.StatusOK || apiResponse.StatusCode == fasthttp.StatusAccepted {
         if err := json.Unmarshal(apiResponse.Body, dest); err != nil {

@@ -11,9 +11,9 @@ import (
     "encoding/base64"
     "fmt"
 
+    "github.com/transchain/sdk-go/api"
     "github.com/transchain/sdk-go/crypto/nacl"
 
-    "github.com/katena-chain/sdk-go/api"
     "github.com/katena-chain/sdk-go/client"
     "github.com/katena-chain/sdk-go/entity/certify"
 )
@@ -32,10 +32,7 @@ func main() {
 
     // Nacl box information
     bobCryptPrivateKeyBase64 := "quGBP8awD/J3hjSvwGD/sZRcMDks8DPz9Vw0HD4+zecqJP0ojBoc4wQtyq08ywxUksTkdz0/rQNkOsEZBwqWTw=="
-    bobCryptPrivateKey, err := nacl.NewPrivateKeyFromBase64(bobCryptPrivateKeyBase64)
-    if err != nil {
-        panic(err)
-    }
+    bobCryptPrivateKey := nacl.NewPrivateKeyFromBase64(bobCryptPrivateKeyBase64)
 
     // Secret uuid Bob wants to retrieve
     secretUuid := "2075c941-6876-405b-87d5-13791c0dc53a"

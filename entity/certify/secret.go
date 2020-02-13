@@ -26,6 +26,16 @@ type SecretNaclBoxV1 struct {
     Content []byte         `json:"content" validate:"required,min=1,max=128"`
 }
 
+// SecretNaclBoxV1 constructor.
+func NewSecretNaclBoxV1(id string, sender nacl.PublicKey, nonce nacl.BoxNonce, content []byte) *SecretNaclBoxV1 {
+    return &SecretNaclBoxV1{
+        Id:      id,
+        Sender:  sender,
+        Nonce:   nonce,
+        Content: content,
+    }
+}
+
 // GetType returns the type string representation.
 func (s SecretNaclBoxV1) GetType() string {
     return GetTypeSecretNaclBoxV1()
@@ -38,20 +48,20 @@ func (s SecretNaclBoxV1) GetId() string {
 
 // GetNamespace returns the certify namespace.
 func (s SecretNaclBoxV1) GetNamespace() string {
-    return NamespaceCertify
+    return Namespace
 }
 
-// GetSubNamespace returns the secret sub namespace.
-func (s SecretNaclBoxV1) GetSubNamespace() string {
-    return GetSecretSubNamespace()
+// GetCategory returns the secret category.
+func (s SecretNaclBoxV1) GetCategory() string {
+    return GetCategorySecret()
 }
 
-// GetSecretSubNamespace returns the secret sub namespace.
-func GetSecretSubNamespace() string {
-    return fmt.Sprintf("%s.%s", NamespaceCertify, TypeSecret)
+// GetCategorySecret returns the secret category.
+func GetCategorySecret() string {
+    return fmt.Sprintf("%s.%s", Namespace, TypeSecret)
 }
 
 // GetTypeSecretNaclBoxV1 returns the secret nacl box v1 type.
 func GetTypeSecretNaclBoxV1() string {
-    return fmt.Sprintf("%s.%s.%s", GetSecretSubNamespace(), TypeNaclBox, "v1")
+    return fmt.Sprintf("%s.%s.%s", GetCategorySecret(), TypeNaclBox, "v1")
 }
