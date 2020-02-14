@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Go >= 1.10
+- Go >= 1.13
 
 ## Install
 
@@ -27,6 +27,9 @@ Available examples:
 * Retrieve a list of historical `Certificate`
 * Encrypt and send a `Secret`
 * Retrieve a list of `Secret`
+* Create a company key
+* Revoke a company key
+* Retrieve keys of a company
 
 For instance, to send a certificate:
 ```bash
