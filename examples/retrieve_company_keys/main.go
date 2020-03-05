@@ -8,37 +8,38 @@
 package main
 
 import (
-    "fmt"
+	"fmt"
 
-    "github.com/transchain/sdk-go/api"
+	"github.com/transchain/sdk-go/api"
 
-    "github.com/katena-chain/sdk-go/client"
+	"github.com/katena-chain/sdk-go/client"
 )
 
 func main() {
-    // Alice wants to retrieve the keys of its company
+	// Alice wants to retrieve the keys of its company
 
-    // Common Katena network information
-    apiUrl := "https://api.test.katena.transchain.io/api/v1"
+	// Common Katena network information
+	apiUrl := "https://nodes.test.katena.transchain.io/api/v1"
 
-    // Alice Katena network information
-    aliceCompanyChainId := "abcdef"
+	// Alice Katena network information
+	aliceCompanyBcid := "abcdef"
 
-    // Create a Katena API helper
-    transactor := client.NewTransactor(apiUrl, "", "", nil)
+	// Create a Katena API helper
+	transactor := client.NewTransactor(apiUrl, "", "", nil)
 
-    // Retrieve the keys from Katena
-    keys, err := transactor.RetrieveCompanyKeys(aliceCompanyChainId, 1, api.DefaultPerPageParam)
-    if err != nil {
-        panic(err)
-    }
-    for _, key := range keys {
-        fmt.Println("KeyV1")
-        fmt.Println(fmt.Sprintf("  PublicKey : %s", key.PublicKey))
-        fmt.Println(fmt.Sprintf("  IsActive : %t", key.IsActive))
-        fmt.Println(fmt.Sprintf("  CompanyBlockChainID : %s", key.CompanyBlockChainID))
-        fmt.Println(fmt.Sprintf("  Role : %s", key.Role))
+	// Retrieve the keys from Katena
+	keys, err := transactor.RetrieveCompanyKeys(aliceCompanyBcid, 1, api.DefaultPerPageParam)
+	if err != nil {
+		panic(err)
+	}
 
-        fmt.Println()
-    }
+	for _, key := range keys {
+		fmt.Println("KeyV1")
+		fmt.Println(fmt.Sprintf("  Company bcid : %s", key.CompanyBcid))
+		fmt.Println(fmt.Sprintf("  Public key   : %s", key.PublicKey))
+		fmt.Println(fmt.Sprintf("  Is active    : %t", key.IsActive))
+		fmt.Println(fmt.Sprintf("  Role         : %s", key.Role))
+
+		fmt.Println()
+	}
 }

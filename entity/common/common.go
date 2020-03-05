@@ -1,6 +1,6 @@
 package common
 
 const (
-    TypeCreate = "create"
-    TypeRevoke = "revoke"
+	TypeCreate = "create"
+	TypeRevoke = "revoke"
 )

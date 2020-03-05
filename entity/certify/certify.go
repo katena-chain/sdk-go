@@ -8,5 +8,5 @@
 package certify
 
 const (
-    Namespace = "certify"
+	Namespace = "certify"
 )

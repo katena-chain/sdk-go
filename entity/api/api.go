@@ -8,21 +8,21 @@
 package api
 
 import (
-    "fmt"
+	"fmt"
 
-    "github.com/katena-chain/sdk-go/entity"
+	"github.com/katena-chain/sdk-go/entity"
 )
 
 // TxWrappers wraps a list of TxWrapper with the total txs available.
 type TxWrappers struct {
-    Txs   []*TxWrapper `json:"txs"`
-    Total uint32       `json:"total"`
+	Txs   []*TxWrapper `json:"txs"`
+	Total uint32       `json:"total"`
 }
 
 // TxWrapper wraps a tx and its status.
 type TxWrapper struct {
-    Tx     *entity.Tx `json:"tx"`
-    Status *TxStatus  `json:"status"`
+	Tx     *entity.Tx `json:"tx"`
+	Status *TxStatus  `json:"status"`
 }
 
 // TxStatus is a tx blockchain status.
@@ -30,29 +30,29 @@ type TxWrapper struct {
 // 1: PENDING
 // >1: ERROR WITH CORRESPONDING CODE
 type TxStatus struct {
-    Code    uint32 `json:"code"`
-    Message string `json:"message"`
+	Code    uint32 `json:"code"`
+	Message string `json:"message"`
 }
 
 // PublicError allows to wrap API errors.
 type PublicError struct {
-    Codespace string `json:"codespace,omitempty"`
-    Code      uint32 `json:"code"`
-    Message   string `json:"message"`
+	Codespace string `json:"codespace,omitempty"`
+	Code      uint32 `json:"code"`
+	Message   string `json:"message"`
 }
 
 // PublicError constructor.
 func NewPublicError(codespace string, code uint32, message string) *PublicError {
-    return &PublicError{
-        Codespace: codespace,
-        Code:      code,
-        Message:   message,
-    }
+	return &PublicError{
+		Codespace: codespace,
+		Code:      code,
+		Message:   message,
+	}
 }
 
 // Error returns the error formatted as a string (error interface requirement).
 func (pe PublicError) Error() string {
-    return fmt.Sprintf(`ERROR:
+	return fmt.Sprintf(`ERROR:
 Codespace: %s
 Code: %d
 Message: %s

@@ -8,98 +8,98 @@
 package certify
 
 import (
-    "fmt"
+	"fmt"
 
-    "github.com/transchain/sdk-go/crypto/ed25519"
+	"github.com/transchain/sdk-go/crypto/ed25519"
 )
 
 const (
-    TypeCertificate = "certificate"
-    TypeRaw         = "raw"
-    TypeEd25519     = "ed25519"
+	TypeCertificate = "certificate"
+	TypeRaw         = "raw"
+	TypeEd25519     = "ed25519"
 )
 
 // CertificateRawV1 is the first version of a raw certificate.
 type CertificateRawV1 struct {
-    Id    string `json:"id" validate:"required,txid"`
-    Value []byte `json:"value" validate:"required,min=1,max=128"`
+	Id    string `json:"id" validate:"required,txid"`
+	Value []byte `json:"value" validate:"required,min=1,max=128"`
 }
 
 // CertificateRawV1 constructor.
 func NewCertificateRawV1(id string, value []byte) *CertificateRawV1 {
-    return &CertificateRawV1{
-        Id:    id,
-        Value: value,
-    }
+	return &CertificateRawV1{
+		Id:    id,
+		Value: value,
+	}
 }
 
 // GetType returns the type string representation.
 func (c CertificateRawV1) GetType() string {
-    return GetTypeCertificateRawV1()
+	return GetTypeCertificateRawV1()
 }
 
 // GetId returns the id value.
 func (c CertificateRawV1) GetId() string {
-    return c.Id
+	return c.Id
 }
 
 // GetNamespace returns the certify namespace.
 func (c CertificateRawV1) GetNamespace() string {
-    return Namespace
+	return Namespace
 }
 
 // GetCategory returns the certificate category.
 func (c CertificateRawV1) GetCategory() string {
-    return GetCategoryCertificate()
+	return GetCategoryCertificate()
 }
 
 // CertificateEd25519V1 is the first version of an ed25519 certificate.
 type CertificateEd25519V1 struct {
-    Id        string            `json:"id" validate:"required,txid"`
-    Signer    ed25519.PublicKey `json:"signer" validate:"required,len=32"`
-    Signature ed25519.Signature `json:"signature" validate:"required,len=64"`
+	Id        string            `json:"id" validate:"required,txid"`
+	Signer    ed25519.PublicKey `json:"signer" validate:"required,len=32"`
+	Signature ed25519.Signature `json:"signature" validate:"required,len=64"`
 }
 
 // CertificateEd25519V1 constructor.
 func NewCertificateEd25519V1(id string, signer ed25519.PublicKey, signature ed25519.Signature) *CertificateEd25519V1 {
-    return &CertificateEd25519V1{
-        Id:        id,
-        Signer:    signer,
-        Signature: signature,
-    }
+	return &CertificateEd25519V1{
+		Id:        id,
+		Signer:    signer,
+		Signature: signature,
+	}
 }
 
 // GetType returns the type string representation.
 func (ce CertificateEd25519V1) GetType() string {
-    return GetTypeCertificateEd25519V1()
+	return GetTypeCertificateEd25519V1()
 }
 
 // GetId returns the id value.
 func (ce CertificateEd25519V1) GetId() string {
-    return ce.Id
+	return ce.Id
 }
 
 // GetNamespace returns the certify namespace.
 func (ce CertificateEd25519V1) GetNamespace() string {
-    return Namespace
+	return Namespace
 }
 
 // GetCategory returns the certificate category.
 func (ce CertificateEd25519V1) GetCategory() string {
-    return GetCategoryCertificate()
+	return GetCategoryCertificate()
 }
 
 // GetCategoryCertificate returns the certificate category.
 func GetCategoryCertificate() string {
-    return fmt.Sprintf("%s.%s", Namespace, TypeCertificate)
+	return fmt.Sprintf("%s.%s", Namespace, TypeCertificate)
 }
 
 // GetTypeCertificateRawV1 returns the certificate raw v1 type.
 func GetTypeCertificateRawV1() string {
-    return fmt.Sprintf("%s.%s.%s", GetCategoryCertificate(), TypeRaw, "v1")
+	return fmt.Sprintf("%s.%s.%s", GetCategoryCertificate(), TypeRaw, "v1")
 }
 
 // GetTypeCertificateRawV1 returns the certificate ed25519 v1 type.
 func GetTypeCertificateEd25519V1() string {
-    return fmt.Sprintf("%s.%s.%s", GetCategoryCertificate(), TypeEd25519, "v1")
+	return fmt.Sprintf("%s.%s.%s", GetCategoryCertificate(), TypeEd25519, "v1")
 }

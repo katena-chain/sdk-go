@@ -8,25 +8,25 @@
 package entity
 
 import (
-    "encoding/json"
-    "time"
+	"encoding/json"
+	"time"
 )
 
 const RFC3339MicroZeroPadded = "2006-01-02T15:04:05.000000Z07:00"
 
 // Time is a time.Time wrapper.
 type Time struct {
-    time.Time
+	time.Time
 }
 
 // MarshalJSON converts a Time into a time.Time and marshals its UTC value with a microseconds precision.
 func (t Time) MarshalJSON() ([]byte, error) {
-    return json.Marshal(t.Time.UTC().Truncate(time.Microsecond).Format(RFC3339MicroZeroPadded))
+	return json.Marshal(t.Time.UTC().Truncate(time.Microsecond).Format(RFC3339MicroZeroPadded))
 }
 
 // GetCurrentTime returns a well formatted custom time.Now()
 func GetCurrentTime() Time {
-    return Time{
-        Time: time.Now().UTC().Truncate(time.Microsecond),
-    }
+	return Time{
+		Time: time.Now().UTC().Truncate(time.Microsecond),
+	}
 }

@@ -8,5 +8,5 @@
 package account
 
 const (
-    Namespace = "account"
+	Namespace = "account"
 )
