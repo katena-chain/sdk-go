@@ -23,8 +23,8 @@ import (
 
 const (
 	CertificatesPath = "/certificates"
+	LastPath         = "/last"
 	SecretsPath      = "/secrets"
-	HistoryPath      = "/history"
 	TxsPath          = "/txs"
 	CompaniesPath    = "/companies"
 	KeysPath         = "/keys"
@@ -55,24 +55,10 @@ func (h *Handler) SendTx(txBytes []byte) (*entityApi.TxStatus, error) {
 	return &txStatus, nil
 }
 
-// RetrieveCertificate fetches the API and returns a tx wrapper or an error.
-func (h *Handler) RetrieveCertificate(id string) (*entityApi.TxWrapper, error) {
-	apiResponse, err := h.SafeGet(fmt.Sprintf("%s/%s", CertificatesPath, id), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var txWrapper entityApi.TxWrapper
-	if err := unmarshalApiResponse(apiResponse, &txWrapper); err != nil {
-		return nil, err
-	}
-	return &txWrapper, nil
-}
-
-// RetrieveCertificatesHistory fetches the API and returns a tx wrapper list or an error.
-func (h *Handler) RetrieveCertificatesHistory(id string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
+// RetrieveCertificates fetches the API and returns a tx wrapper list or an error.
+func (h *Handler) RetrieveCertificates(id string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
 	queryParams := api.GetPaginationQueryParams(page, txPerPage)
-	apiResponse, err := h.SafeGet(fmt.Sprintf("%s/%s%s", CertificatesPath, id, HistoryPath), queryParams)
+	apiResponse, err := h.SafeGet(fmt.Sprintf("%s/%s", CertificatesPath, id), queryParams)
 	if err != nil {
 		return nil, err
 	}
@@ -82,6 +68,20 @@ func (h *Handler) RetrieveCertificatesHistory(id string, page int, txPerPage int
 		return nil, err
 	}
 	return &txWrappers, nil
+}
+
+// RetrieveLastCertificate fetches the API and returns a tx wrapper or an error.
+func (h *Handler) RetrieveLastCertificate(id string) (*entityApi.TxWrapper, error) {
+	apiResponse, err := h.SafeGet(fmt.Sprintf("%s/%s%s", CertificatesPath, id, LastPath), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var txWrapper entityApi.TxWrapper
+	if err := unmarshalApiResponse(apiResponse, &txWrapper); err != nil {
+		return nil, err
+	}
+	return &txWrapper, nil
 }
 
 // RetrieveSecrets fetches the API and returns a tx wrapper list or an error.
@@ -98,8 +98,8 @@ func (h *Handler) RetrieveSecrets(id string, page int, txPerPage int) (*entityAp
 	return &txWrappers, nil
 }
 
-// RetrieveTx fetches the API and returns a tx wrapper or an error.
-func (h *Handler) RetrieveTx(txCategory string, id string) (*entityApi.TxWrapper, error) {
+// RetrieveLastTx fetches the API and returns a tx wrapper or an error.
+func (h *Handler) RetrieveLastTx(txCategory string, id string) (*entityApi.TxWrapper, error) {
 	txWrappers, err := h.RetrieveTxs(txCategory, id, 1, api.DefaultPerPageParam)
 	if err != nil {
 		return nil, err

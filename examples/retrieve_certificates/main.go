@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	// Alice wants to retrieve a certificate history
+	// Alice wants to retrieve certificates
 
 	// Common Katena network information
 	apiUrl := "https://nodes.test.katena.transchain.io/api/v1"
@@ -28,11 +28,11 @@ func main() {
 	// Create a Katena API helper
 	transactor := client.NewTransactor(apiUrl, "", "", nil)
 
-	// Certificate uuid Alice wants to retrieve
+	// Certificates uuid Alice wants to retrieve
 	certificateUuid := "2075c941-6876-405b-87d5-13791c0dc53a"
 
-	// Retrieve a version 1 of a certificate history from Katena
-	txWrappers, err := transactor.RetrieveCertificatesHistory(aliceCompanyBcid, certificateUuid, 1, api.DefaultPerPageParam)
+	// Retrieve version 1 of certificates from Katena
+	txWrappers, err := transactor.RetrieveCertificates(aliceCompanyBcid, certificateUuid, 1, api.DefaultPerPageParam)
 	if err != nil {
 		panic(err)
 	}

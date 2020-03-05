@@ -68,23 +68,23 @@ func (t Transactor) SendSecretNaclBoxV1(uuid string, sender nacl.PublicKey, nonc
 	return t.SendTx(secret)
 }
 
-// RetrieveCertificate fetches the API and returns a tx wrapper or an error.
-func (t Transactor) RetrieveCertificate(companyBcid string, uuid string) (*entityApi.TxWrapper, error) {
-	return t.apiHandler.RetrieveCertificate(entity.FormatTxid(companyBcid, uuid))
+// RetrieveCertificates fetches the API and returns a tx wrapper list or an error.
+func (t Transactor) RetrieveCertificates(companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
+	return t.apiHandler.RetrieveCertificates(entity.FormatTxid(companyBcid, uuid), page, txPerPage)
 }
 
-// RetrieveCertificatesHistory fetches the API and returns a tx wrapper list or an error.
-func (t Transactor) RetrieveCertificatesHistory(companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
-	return t.apiHandler.RetrieveCertificatesHistory(entity.FormatTxid(companyBcid, uuid), page, txPerPage)
+// RetrieveLastCertificate fetches the API and returns a tx wrapper or an error.
+func (t Transactor) RetrieveLastCertificate(companyBcid string, uuid string) (*entityApi.TxWrapper, error) {
+	return t.apiHandler.RetrieveLastCertificate(entity.FormatTxid(companyBcid, uuid))
 }
 
-// RetrieveKeysCreate fetches the API and returns a tx wrapper list or an error.
-func (t Transactor) RetrieveKeysCreate(companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
+// RetrieveKeyCreateTxs fetches the API and returns a tx wrapper list or an error.
+func (t Transactor) RetrieveKeyCreateTxs(companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
 	return t.apiHandler.RetrieveTxs(account.GetCategoryKeyCreate(), entity.FormatTxid(companyBcid, uuid), page, txPerPage)
 }
 
-// RetrieveKeysRevoke fetches the API and returns a tx wrapper list or an error.
-func (t Transactor) RetrieveKeysRevoke(companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
+// RetrieveKeyRevokeTxs fetches the API and returns a tx wrapper list or an error.
+func (t Transactor) RetrieveKeyRevokeTxs(companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
 	return t.apiHandler.RetrieveTxs(account.GetCategoryKeyRevoke(), entity.FormatTxid(companyBcid, uuid), page, txPerPage)
 }
 

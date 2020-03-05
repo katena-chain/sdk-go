@@ -30,7 +30,7 @@ func main() {
 	certificateUuid := "2075c941-6876-405b-87d5-13791c0dc53a"
 
 	// Retrieve a version 1 of a certificate from Katena
-	txWrapper, err := transactor.RetrieveCertificate(aliceCompanyBcid, certificateUuid)
+	txWrapper, err := transactor.RetrieveLastCertificate(aliceCompanyBcid, certificateUuid)
 	if err != nil {
 		panic(err)
 	}
