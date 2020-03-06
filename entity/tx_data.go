@@ -51,7 +51,7 @@ func SplitTxid(id string) (string, string) {
 	return split[0], split[1]
 }
 
-// FormatTxid concatenates a company chain id and a uuid into a txid.
+// FormatTxid concatenates a company bcid and a uuid into a txid.
 func FormatTxid(companyBcid string, uuid string) string {
 	return fmt.Sprintf("%s-%s", companyBcid, uuid)
 }

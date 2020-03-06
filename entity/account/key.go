@@ -1,18 +1,7 @@
 package account
 
 import (
-	"fmt"
-
 	"github.com/transchain/sdk-go/crypto/ed25519"
-
-	"github.com/katena-chain/sdk-go/entity/common"
-)
-
-const (
-	TypeKey = "key"
-
-	DefaultRoleID      = "default"
-	CompanyAdminRoleID = "company_admin"
 )
 
 // KeyV1 is the first version of a key.
@@ -69,16 +58,6 @@ func (kc KeyCreateV1) GetCategory() string {
 	return GetCategoryKeyCreate()
 }
 
-// GetTypeKeyCreateV1 returns the key create v1 type.
-func GetTypeKeyCreateV1() string {
-	return fmt.Sprintf("%s.%s", GetCategoryKeyCreate(), "v1")
-}
-
-// GetCategoryKeyCreate returns the key create category.
-func GetCategoryKeyCreate() string {
-	return fmt.Sprintf("%s.%s.%s", Namespace, TypeKey, common.TypeCreate)
-}
-
 // KeyRevokeV1 is the first version of a key revoke message.
 type KeyRevokeV1 struct {
 	Id        string            `json:"id" validate:"required,txid"`
@@ -111,14 +90,4 @@ func (kr KeyRevokeV1) GetNamespace() string {
 // GetCategory returns the key revoke category.
 func (kr KeyRevokeV1) GetCategory() string {
 	return GetCategoryKeyRevoke()
-}
-
-// GetTypeKeyRevokeV1 returns the key revoke v1 type.
-func GetTypeKeyRevokeV1() string {
-	return fmt.Sprintf("%s.%s", GetCategoryKeyRevoke(), "v1")
-}
-
-// GetCategoryKeyRevoke returns the key revoke category.
-func GetCategoryKeyRevoke() string {
-	return fmt.Sprintf("%s.%s.%s", Namespace, TypeKey, common.TypeRevoke)
 }

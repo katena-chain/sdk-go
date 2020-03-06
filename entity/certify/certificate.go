@@ -8,15 +8,7 @@
 package certify
 
 import (
-	"fmt"
-
 	"github.com/transchain/sdk-go/crypto/ed25519"
-)
-
-const (
-	TypeCertificate = "certificate"
-	TypeRaw         = "raw"
-	TypeEd25519     = "ed25519"
 )
 
 // CertificateRawV1 is the first version of a raw certificate.
@@ -87,19 +79,4 @@ func (ce CertificateEd25519V1) GetNamespace() string {
 // GetCategory returns the certificate category.
 func (ce CertificateEd25519V1) GetCategory() string {
 	return GetCategoryCertificate()
-}
-
-// GetCategoryCertificate returns the certificate category.
-func GetCategoryCertificate() string {
-	return fmt.Sprintf("%s.%s", Namespace, TypeCertificate)
-}
-
-// GetTypeCertificateRawV1 returns the certificate raw v1 type.
-func GetTypeCertificateRawV1() string {
-	return fmt.Sprintf("%s.%s.%s", GetCategoryCertificate(), TypeRaw, "v1")
-}
-
-// GetTypeCertificateRawV1 returns the certificate ed25519 v1 type.
-func GetTypeCertificateEd25519V1() string {
-	return fmt.Sprintf("%s.%s.%s", GetCategoryCertificate(), TypeEd25519, "v1")
 }

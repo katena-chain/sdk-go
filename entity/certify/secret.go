@@ -8,14 +8,7 @@
 package certify
 
 import (
-	"fmt"
-
 	"github.com/transchain/sdk-go/crypto/nacl"
-)
-
-const (
-	TypeSecret  = "secret"
-	TypeNaclBox = "nacl_box"
 )
 
 // SecretNaclBoxV1 is the first version of a nacl box secret.
@@ -54,14 +47,4 @@ func (s SecretNaclBoxV1) GetNamespace() string {
 // GetCategory returns the secret category.
 func (s SecretNaclBoxV1) GetCategory() string {
 	return GetCategorySecret()
-}
-
-// GetCategorySecret returns the secret category.
-func GetCategorySecret() string {
-	return fmt.Sprintf("%s.%s", Namespace, TypeSecret)
-}
-
-// GetTypeSecretNaclBoxV1 returns the secret nacl box v1 type.
-func GetTypeSecretNaclBoxV1() string {
-	return fmt.Sprintf("%s.%s.%s", GetCategorySecret(), TypeNaclBox, "v1")
 }
