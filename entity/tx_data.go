@@ -42,7 +42,7 @@ func GetTxDataStateBytes(chainID string, nonceTime Time, txData TxData) []byte {
 	return kcJson.MustMarshalAndSortJSON(data)
 }
 
-// SplitTxid separates a txid field into a company chain id and a uuid.
+// SplitTxid separates a txid field into a company bcid and a uuid.
 func SplitTxid(id string) (string, string) {
 	split := strings.SplitN(id, "-", 2)
 	if len(split) < 2 {
