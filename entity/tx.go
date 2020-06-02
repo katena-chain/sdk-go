@@ -15,25 +15,19 @@ import (
 
 	"github.com/transchain/sdk-go/crypto/ed25519"
 	kcJson "github.com/transchain/sdk-go/json"
-
-	"github.com/katena-chain/sdk-go/entity/account"
-	"github.com/katena-chain/sdk-go/entity/certify"
 )
 
-var AvailableTxDataTypes = map[string]reflect.Type{
-	certify.GetTypeCertificateRawV1():     reflect.TypeOf(certify.CertificateRawV1{}),
-	certify.GetTypeCertificateEd25519V1(): reflect.TypeOf(certify.CertificateEd25519V1{}),
-	certify.GetTypeSecretNaclBoxV1():      reflect.TypeOf(certify.SecretNaclBoxV1{}),
-	account.GetTypeKeyCreateV1():          reflect.TypeOf(account.KeyCreateV1{}),
-	account.GetTypeKeyRevokeV1():          reflect.TypeOf(account.KeyRevokeV1{}),
-}
-
-// Tx wraps a tx data with its signature information and a nonce time to avoid replay attacks.
+// Tx wraps a TxData with its signature, its signer id and a nonce time.
 type Tx struct {
-	NonceTime Time              `json:"nonce_time" validate:"required"`
-	Data      TxData            `json:"data" validate:"required"`
-	Signer    ed25519.PublicKey `json:"signer" validate:"required,len=32"`
-	Signature ed25519.Signature `json:"signature" validate:"required,len=64"`
+	// To avoid replay attack, this value is checked in the replay protector.
+	NonceTime Time `json:"nonce_time" validate:"required"`
+
+	// Transaction data, this value is handled by the application.
+	Data TxData `json:"data" validate:"required"`
+
+	// Transaction signer and signature info to identify the sender.
+	SignerFqId string            `json:"signer_fqid" validate:"required,fqid"`
+	Signature  ed25519.Signature `json:"signature" validate:"required,len=64"`
 }
 
 // TxAlias is useful to avoid triggering the custom Tx MarshalJSON method.
@@ -55,9 +49,9 @@ type unmarshalTxAlias struct {
 func (a Tx) MarshalJSON() ([]byte, error) {
 	return json.Marshal(marshalTxAlias{
 		TxAlias: &TxAlias{
-			NonceTime: a.NonceTime,
-			Signer:    a.Signer,
-			Signature: a.Signature,
+			NonceTime:  a.NonceTime,
+			SignerFqId: a.SignerFqId,
+			Signature:  a.Signature,
 		},
 		Data: kcJson.MarshalWrapper{
 			Type:  a.Data.GetType(),

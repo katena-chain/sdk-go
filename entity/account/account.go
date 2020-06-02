@@ -17,26 +17,26 @@ const (
 	Namespace = "account"
 	TypeKey   = "key"
 
-	DefaultRoleID      = "default"
-	CompanyAdminRoleID = "company_admin"
+	DefaultRoleId      = "default"
+	CompanyAdminRoleId = "company_admin"
 )
 
-// GetTypeKeyCreateV1 returns the key create v1 type.
-func GetTypeKeyCreateV1() string {
-	return fmt.Sprintf("%s.%s", GetCategoryKeyCreate(), "v1")
+// GetKeyIdKey returns the id key to index a key.
+func GetKeyIdKey() string {
+	return fmt.Sprintf("%s.%s", Namespace, TypeKey)
 }
 
-// GetCategoryKeyCreate returns the key create category.
-func GetCategoryKeyCreate() string {
-	return fmt.Sprintf("%s.%s.%s", Namespace, TypeKey, common.TypeCreate)
+// GetKeyCreateV1Type returns the type string representation of a KeyCreateV1.
+func GetKeyCreateV1Type() string {
+	return fmt.Sprintf("%s.%s.%s", GetKeyIdKey(), common.TypeCreate, "v1")
 }
 
-// GetTypeKeyRevokeV1 returns the key revoke v1 type.
-func GetTypeKeyRevokeV1() string {
-	return fmt.Sprintf("%s.%s", GetCategoryKeyRevoke(), "v1")
+// GetKeyRotateV1Type returns the type string representation of a KeRotateV1.
+func GetKeyRotateV1Type() string {
+	return fmt.Sprintf("%s.%s.%s", GetKeyIdKey(), common.TypeRotate, "v1")
 }
 
-// GetCategoryKeyRevoke returns the key revoke category.
-func GetCategoryKeyRevoke() string {
-	return fmt.Sprintf("%s.%s.%s", Namespace, TypeKey, common.TypeRevoke)
+// GetKeyRevokeV1Type returns the type string representation of a KeyRevokeV1.
+func GetKeyRevokeV1Type() string {
+	return fmt.Sprintf("%s.%s.%s", GetKeyIdKey(), common.TypeRevoke, "v1")
 }

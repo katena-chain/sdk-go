@@ -9,11 +9,13 @@ package certify
 
 import (
 	"github.com/transchain/sdk-go/crypto/nacl"
+
+	"github.com/katena-chain/sdk-go/entity/common"
 )
 
 // SecretNaclBoxV1 is the first version of a nacl box secret.
 type SecretNaclBoxV1 struct {
-	Id      string         `json:"id" validate:"required,txid"`
+	Id      string         `json:"id" validate:"required,uuid4"`
 	Sender  nacl.PublicKey `json:"sender" validate:"required,len=32"`
 	Nonce   nacl.BoxNonce  `json:"nonce" validate:"required,len=24"`
 	Content []byte         `json:"content" validate:"required,min=1,max=128"`
@@ -29,22 +31,19 @@ func NewSecretNaclBoxV1(id string, sender nacl.PublicKey, nonce nacl.BoxNonce, c
 	}
 }
 
-// GetType returns the type string representation.
-func (s SecretNaclBoxV1) GetType() string {
-	return GetTypeSecretNaclBoxV1()
-}
-
-// GetId returns the id value.
-func (s SecretNaclBoxV1) GetId() string {
-	return s.Id
+// GetStateIds returns key-value pairs of id keys and id values.
+func (snb SecretNaclBoxV1) GetStateIds(signerCompanyBcId string) map[string]string {
+	return map[string]string{
+		GetSecretIdKey(): common.ConcatFqId(signerCompanyBcId, snb.Id),
+	}
 }
 
 // GetNamespace returns the certify namespace.
-func (s SecretNaclBoxV1) GetNamespace() string {
+func (snb SecretNaclBoxV1) GetNamespace() string {
 	return Namespace
 }
 
-// GetCategory returns the secret category.
-func (s SecretNaclBoxV1) GetCategory() string {
-	return GetCategorySecret()
+// GetType returns the type string representation.
+func (snb SecretNaclBoxV1) GetType() string {
+	return GetSecretNaclBoxV1Type()
 }

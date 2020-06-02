@@ -20,27 +20,27 @@ const (
 	TypeNaclBox     = "nacl_box"
 )
 
-// GetCategoryCertificate returns the certificate category.
-func GetCategoryCertificate() string {
+// GetCertificateIdKey returns the id key to index a certificate.
+func GetCertificateIdKey() string {
 	return fmt.Sprintf("%s.%s", Namespace, TypeCertificate)
 }
 
-// GetTypeCertificateRawV1 returns the certificate raw v1 type.
-func GetTypeCertificateRawV1() string {
-	return fmt.Sprintf("%s.%s.%s", GetCategoryCertificate(), TypeRaw, "v1")
+// GetCertificateRawV1Type returns the type string representation of a CertificateRawV1.
+func GetCertificateRawV1Type() string {
+	return fmt.Sprintf("%s.%s.%s", GetCertificateIdKey(), TypeRaw, "v1")
 }
 
-// GetTypeCertificateRawV1 returns the certificate ed25519 v1 type.
-func GetTypeCertificateEd25519V1() string {
-	return fmt.Sprintf("%s.%s.%s", GetCategoryCertificate(), TypeEd25519, "v1")
+// GetCertificateRawV1Type returns the type string representation of a CertificateEd25519V1.
+func GetCertificateEd25519V1Type() string {
+	return fmt.Sprintf("%s.%s.%s", GetCertificateIdKey(), TypeEd25519, "v1")
 }
 
-// GetCategorySecret returns the secret category.
-func GetCategorySecret() string {
+// GetSecretIdKey returns returns the id key to index a secret.
+func GetSecretIdKey() string {
 	return fmt.Sprintf("%s.%s", Namespace, TypeSecret)
 }
 
-// GetTypeSecretNaclBoxV1 returns the secret nacl box v1 type.
-func GetTypeSecretNaclBoxV1() string {
-	return fmt.Sprintf("%s.%s.%s", GetCategorySecret(), TypeNaclBox, "v1")
+// GetSecretNaclBoxV1Type returns the type string representation of a SecretNaclBoxV1.
+func GetSecretNaclBoxV1Type() string {
+	return fmt.Sprintf("%s.%s.%s", GetSecretIdKey(), TypeNaclBox, "v1")
 }

@@ -8,31 +8,46 @@
 package entity
 
 import (
-	"fmt"
-	"strings"
+	"reflect"
 
 	kcJson "github.com/transchain/sdk-go/json"
+
+	"github.com/katena-chain/sdk-go/entity/account"
+	"github.com/katena-chain/sdk-go/entity/certify"
 )
+
+var AvailableTxDataTypes = map[string]reflect.Type{
+	certify.GetCertificateRawV1Type():     reflect.TypeOf(certify.CertificateRawV1{}),
+	certify.GetCertificateEd25519V1Type(): reflect.TypeOf(certify.CertificateEd25519V1{}),
+	certify.GetSecretNaclBoxV1Type():      reflect.TypeOf(certify.SecretNaclBoxV1{}),
+	account.GetKeyCreateV1Type():          reflect.TypeOf(account.KeyCreateV1{}),
+	account.GetKeyRevokeV1Type():          reflect.TypeOf(account.KeyRevokeV1{}),
+}
 
 // TxData interface defines the methods a concrete TxData must implement.
 type TxData interface {
-	GetId() string
+	// To fetch all the entity state ids a TxData can create/update/delete.
+	// This is also used to index Txs.
+	GetStateIds(signerCompanyBcId string) map[string]string
+
+	// To identify which plugin should handle this TxData.
 	GetNamespace() string
-	GetCategory() string
+
+	// To identify its subtype.
 	GetType() string
 }
 
-// txDataState wraps a TxData and additional values in order to define the unique state to be signed.
+// txDataState wraps a TxData and additional values in order to define a unique state ready to be signed.
 type txDataState struct {
-	ChainID   string                `json:"chain_id"`
+	ChainId   string                `json:"chain_id"`
 	NonceTime Time                  `json:"nonce_time"`
 	Data      kcJson.MarshalWrapper `json:"data"`
 }
 
 // GetTxDataStateBytes returns the sorted and marshaled json representation of a TxData ready to be signed.
-func GetTxDataStateBytes(chainID string, nonceTime Time, txData TxData) []byte {
+func GetTxDataStateBytes(chainId string, nonceTime Time, txData TxData) []byte {
 	data := txDataState{
-		ChainID:   chainID,
+		ChainId:   chainId,
 		NonceTime: nonceTime,
 		Data: kcJson.MarshalWrapper{
 			Type:  txData.GetType(),
@@ -40,18 +55,4 @@ func GetTxDataStateBytes(chainID string, nonceTime Time, txData TxData) []byte {
 		},
 	}
 	return kcJson.MustMarshalAndSortJSON(data)
-}
-
-// SplitTxid separates a txid field into a company bcid and a uuid.
-func SplitTxid(id string) (string, string) {
-	split := strings.SplitN(id, "-", 2)
-	if len(split) < 2 {
-		return "", ""
-	}
-	return split[0], split[1]
-}
-
-// FormatTxid concatenates a company bcid and a uuid into a txid.
-func FormatTxid(companyBcid string, uuid string) string {
-	return fmt.Sprintf("%s-%s", companyBcid, uuid)
 }

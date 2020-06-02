@@ -9,11 +9,13 @@ package certify
 
 import (
 	"github.com/transchain/sdk-go/crypto/ed25519"
+
+	"github.com/katena-chain/sdk-go/entity/common"
 )
 
 // CertificateRawV1 is the first version of a raw certificate.
 type CertificateRawV1 struct {
-	Id    string `json:"id" validate:"required,txid"`
+	Id    string `json:"id" validate:"required,uuid4"`
 	Value []byte `json:"value" validate:"required,min=1,max=128"`
 }
 
@@ -25,29 +27,26 @@ func NewCertificateRawV1(id string, value []byte) *CertificateRawV1 {
 	}
 }
 
-// GetType returns the type string representation.
-func (c CertificateRawV1) GetType() string {
-	return GetTypeCertificateRawV1()
-}
-
-// GetId returns the id value.
-func (c CertificateRawV1) GetId() string {
-	return c.Id
+// GetStateIds returns key-value pairs of id keys and id values.
+func (cr CertificateRawV1) GetStateIds(signerCompanyBcId string) map[string]string {
+	return map[string]string{
+		GetCertificateIdKey(): common.ConcatFqId(signerCompanyBcId, cr.Id),
+	}
 }
 
 // GetNamespace returns the certify namespace.
-func (c CertificateRawV1) GetNamespace() string {
+func (cr CertificateRawV1) GetNamespace() string {
 	return Namespace
 }
 
-// GetCategory returns the certificate category.
-func (c CertificateRawV1) GetCategory() string {
-	return GetCategoryCertificate()
+// GetType returns the type string representation.
+func (cr CertificateRawV1) GetType() string {
+	return GetCertificateRawV1Type()
 }
 
 // CertificateEd25519V1 is the first version of an ed25519 certificate.
 type CertificateEd25519V1 struct {
-	Id        string            `json:"id" validate:"required,txid"`
+	Id        string            `json:"id" validate:"required,uuid4"`
 	Signer    ed25519.PublicKey `json:"signer" validate:"required,len=32"`
 	Signature ed25519.Signature `json:"signature" validate:"required,len=64"`
 }
@@ -61,14 +60,11 @@ func NewCertificateEd25519V1(id string, signer ed25519.PublicKey, signature ed25
 	}
 }
 
-// GetType returns the type string representation.
-func (ce CertificateEd25519V1) GetType() string {
-	return GetTypeCertificateEd25519V1()
-}
-
-// GetId returns the id value.
-func (ce CertificateEd25519V1) GetId() string {
-	return ce.Id
+// GetStateIds returns key-value pairs of id keys and id values.
+func (ce CertificateEd25519V1) GetStateIds(signerCompanyBcId string) map[string]string {
+	return map[string]string{
+		GetCertificateIdKey(): common.ConcatFqId(signerCompanyBcId, ce.Id),
+	}
 }
 
 // GetNamespace returns the certify namespace.
@@ -76,7 +72,7 @@ func (ce CertificateEd25519V1) GetNamespace() string {
 	return Namespace
 }
 
-// GetCategory returns the certificate category.
-func (ce CertificateEd25519V1) GetCategory() string {
-	return GetCategoryCertificate()
+// GetType returns the type string representation.
+func (ce CertificateEd25519V1) GetType() string {
+	return GetCertificateEd25519V1Type()
 }
