@@ -13,16 +13,25 @@ import (
 	"github.com/katena-chain/sdk-go/entity"
 )
 
-// TxWrappers wraps a list of TxWrapper with the total txs available.
-type TxWrappers struct {
-	Txs   []*TxWrapper `json:"txs"`
-	Total uint32       `json:"total"`
+// TxResults is returned by a GET request to retrieve a list of TxResult with the total txs available.
+type TxResults struct {
+	Txs   []*TxResult `json:"txs"`
+	Total uint32      `json:"total"`
 }
 
-// TxWrapper wraps a tx and its status.
-type TxWrapper struct {
-	Tx     *entity.Tx `json:"tx"`
-	Status *TxStatus  `json:"status"`
+// TxResult is returned by a GET request to retrieve a tx with useful information about its processing.
+type TxResult struct {
+	Hash   entity.HexBytes `json:"hash"`
+	Height int64           `json:"height"`
+	Index  uint32          `json:"index"`
+	Status *TxStatus       `json:"status"`
+	Tx     *entity.Tx      `json:"tx"`
+}
+
+// SendTxResult is returned by a POST request to retrieve the tx status and its hash.
+type SendTxResult struct {
+	Hash   entity.HexBytes `json:"hash"`
+	Status *TxStatus       `json:"status"`
 }
 
 // TxStatus is a tx blockchain status.
