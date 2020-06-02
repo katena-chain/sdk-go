@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	// Alice wants to certify raw off-chain information
+	// Alice wants to rotate a key for its company
 
 	// Load default configuration
 	settings := common.DefaultSettings()
@@ -33,16 +33,17 @@ func main() {
 	aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignKeyInfo.PrivateKeyStr)
 	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
-	// Create a transactor instance to dialogue with a Katena API
+	// Create a Katena API helper
 	txSigner := entity.NewTxSigner(aliceSignPrivateKeyId, &aliceSignPrivateKey, aliceCompanyBcId)
 	transactor := client.NewTransactor(apiUrl, chainId, txSigner)
 
-	// Off-chain information Alice wants to send
-	certificateId := settings.CertificateId
-	dataRawSignature := []byte("off_chain_data_raw_signature_from_go")
+	// Information Alice wants to send
+	keyId := settings.KeyId
+	newPrivateKey := ed25519.GenerateNewPrivateKey()
+	newPublicKey := newPrivateKey.GetPublicKey()
 
-	// Send a version 1 of a certificate raw on Katena
-	txResult, err := transactor.SendCertificateRawV1Tx(certificateId, dataRawSignature)
+	// Send a version 1 of a key rotate on Katena
+	txResult, err := transactor.SendKeyRotateV1Tx(keyId, newPublicKey)
 	if err != nil {
 		panic(err)
 	}

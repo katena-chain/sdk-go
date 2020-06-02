@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	// Alice wants to retrieve the keys of its company
+	// Alice wants to retrieve txs related to a key
 
 	// Load default configuration
 	settings := common.DefaultSettings()
@@ -29,14 +29,29 @@ func main() {
 	// Create a Katena API helper
 	transactor := client.NewTransactor(apiUrl, "", nil)
 
-	// Retrieve a list of keys for a company from the state
-	keys, err := transactor.RetrieveCompanyKeys(aliceCompanyBcId, 1, settings.TxPerPage)
+	// Key id Alice wants to retrieve
+	keyId := settings.KeyId
+
+	// Retrieve txs related to the key fqid
+	txResults, err := transactor.RetrieveKeyTxs(aliceCompanyBcId, keyId, 1, settings.TxPerPage)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("Keys list :")
-	err = common.PrintlnJSON(keys)
+	fmt.Println("Tx list :")
+	err = common.PrintlnJSON(txResults)
+	if err != nil {
+		panic(err)
+	}
+
+	// Retrieve the last tx related to the key fqid
+	txResult, err := transactor.RetrieveLastKeyTx(aliceCompanyBcId, keyId)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Last Tx :")
+	err = common.PrintlnJSON(txResult)
 	if err != nil {
 		panic(err)
 	}

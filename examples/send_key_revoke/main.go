@@ -13,35 +13,42 @@ import (
 	"github.com/transchain/sdk-go/crypto/ed25519"
 
 	"github.com/katena-chain/sdk-go/client"
+	"github.com/katena-chain/sdk-go/entity"
+	"github.com/katena-chain/sdk-go/examples/common"
 )
 
 func main() {
 	// Alice wants to revoke a key for its company
 
+	// Load default configuration
+	settings := common.DefaultSettings()
+
 	// Common Katena network information
-	apiUrl := "https://nodes.test.katena.transchain.io/api/v1"
-	chainID := "katena-chain-test"
+	apiUrl := settings.ApiUrl
+	chainId := settings.ChainId
 
 	// Alice Katena network information
-	aliceSignPrivateKeyBase64 := "7C67DeoLnhI6jvsp3eMksU2Z6uzj8sqZbpgwZqfIyuCZbfoPcitCiCsSp2EzCfkY52Mx58xDOyQLb1OhC7cL5A=="
-	aliceCompanyBcid := "abcdef"
-	aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignPrivateKeyBase64)
+	aliceCompanyBcId := settings.Company.BcId
+	aliceSignKeyInfo := settings.Company.Ed25519Keys["alice"]
+	aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignKeyInfo.PrivateKeyStr)
+	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
 	// Create a Katena API helper
-	transactor := client.NewTransactor(apiUrl, chainID, aliceCompanyBcid, &aliceSignPrivateKey)
+	txSigner := entity.NewTxSigner(aliceSignPrivateKeyId, &aliceSignPrivateKey, aliceCompanyBcId)
+	transactor := client.NewTransactor(apiUrl, chainId, txSigner)
 
 	// Information Alice wants to send
-	keyRevokeUuid := "2075c941-6876-405b-87d5-13791c0dc53a"
-	publicKeyBase64 := "gaKih+STp93wMuKmw5tF5NlQvOlrGsahpSmpr/KwOiw="
-	publicKey := ed25519.NewPublicKeyFromBase64(publicKeyBase64)
+	keyId := settings.KeyId
 
 	// Send a version 1 of a key revoke on Katena
-	txStatus, err := transactor.SendKeyRevokeV1(keyRevokeUuid, publicKey)
+	txResult, err := transactor.SendKeyRevokeV1Tx(keyId)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("Transaction status")
-	fmt.Println(fmt.Sprintf("  Code    : %d", txStatus.Code))
-	fmt.Println(fmt.Sprintf("  Message : %s", txStatus.Message))
+	fmt.Println("Result :")
+	err = common.PrintlnJSON(txResult)
+	if err != nil {
+		panic(err)
+	}
 }

@@ -14,31 +14,38 @@ import (
 	"github.com/transchain/sdk-go/crypto/nacl"
 
 	"github.com/katena-chain/sdk-go/client"
+	"github.com/katena-chain/sdk-go/entity"
+	"github.com/katena-chain/sdk-go/examples/common"
 )
 
 func main() {
 	// Alice wants to send a nacl box secret to Bob to encrypt an off-chain data
 
+	// Load default configuration
+	settings := common.DefaultSettings()
+
 	// Common Katena network information
-	apiUrl := "https://nodes.test.katena.transchain.io/api/v1"
-	chainID := "katena-chain-test"
+	apiUrl := settings.ApiUrl
+	chainId := settings.ChainId
 
 	// Alice Katena network information
-	aliceSignPrivateKeyBase64 := "7C67DeoLnhI6jvsp3eMksU2Z6uzj8sqZbpgwZqfIyuCZbfoPcitCiCsSp2EzCfkY52Mx58xDOyQLb1OhC7cL5A=="
-	aliceCompanyBcid := "abcdef"
-	aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignPrivateKeyBase64)
+	aliceCompanyBcId := settings.Company.BcId
+	aliceSignKeyInfo := settings.Company.Ed25519Keys["alice"]
+	aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignKeyInfo.PrivateKeyStr)
+	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
 	// Nacl box information
-	aliceCryptPrivateKeyBase64 := "nyCzhimWnTQifh6ucXLuJwOz3RgiBpo33LcX1NjMAsP1ZkQcdlDq64lTwxaDx0lq6LCQAUeYywyMUtfsvTUEeQ=="
-	aliceCryptPrivateKey := nacl.NewPrivateKeyFromBase64(aliceCryptPrivateKeyBase64)
-	bobCryptPublicKeyBase64 := "KiT9KIwaHOMELcqtPMsMVJLE5Hc9P60DZDrBGQcKlk8="
-	bobCryptPublicKey := nacl.NewPublicKeyFromBase64(bobCryptPublicKeyBase64)
+	bobCryptKeyInfo := settings.OffChain.X25519Keys["bob"]
+	bobCryptPublicKey := nacl.NewPublicKeyFromBase64(bobCryptKeyInfo.PublicKeyStr)
+	aliceCryptKeyInfo := settings.OffChain.X25519Keys["alice"]
+	aliceCryptPrivateKey := nacl.NewPrivateKeyFromBase64(aliceCryptKeyInfo.PrivateKeyStr)
 
 	// Create a Katena API helper
-	transactor := client.NewTransactor(apiUrl, chainID, aliceCompanyBcid, &aliceSignPrivateKey)
+	txSigner := entity.NewTxSigner(aliceSignPrivateKeyId, &aliceSignPrivateKey, aliceCompanyBcId)
+	transactor := client.NewTransactor(apiUrl, chainId, txSigner)
 
 	// Off-chain information Alice wants to send
-	secretUuid := "2075c941-6876-405b-87d5-13791c0dc53a"
+	secretId := settings.SecretId
 	content := []byte("off_chain_secret_to_crypt_from_go")
 
 	// Alice will use its private key and Bob's public key to encrypt a message
@@ -48,12 +55,14 @@ func main() {
 	}
 
 	// Send a version 1 of a secret nacl box on Katena
-	txStatus, err := transactor.SendSecretNaclBoxV1(secretUuid, aliceCryptPrivateKey.GetPublicKey(), boxNonce, encryptedMessage)
+	txResult, err := transactor.SendSecretNaclBoxV1Tx(secretId, aliceCryptPrivateKey.GetPublicKey(), boxNonce, encryptedMessage)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("Transaction status")
-	fmt.Println(fmt.Sprintf("  Code    : %d", txStatus.Code))
-	fmt.Println(fmt.Sprintf("  Message : %s", txStatus.Message))
+	fmt.Println("Result :")
+	err = common.PrintlnJSON(txResult)
+	if err != nil {
+		panic(err)
+	}
 }

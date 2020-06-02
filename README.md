@@ -21,6 +21,8 @@ Feel free to explore and modify its code to meet your expectations.
 
 Detailed examples are provided in the `examples` folder to explain how to use our `Transactor` helper methods.
 
+You can change various settings in the `examples/common/settings.go` file.
+
 Available examples:
 * Send a `Certificate` transaction
 * Retrieve a `Certificate` transaction

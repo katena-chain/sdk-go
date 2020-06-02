@@ -13,34 +13,43 @@ import (
 	"github.com/transchain/sdk-go/crypto/ed25519"
 
 	"github.com/katena-chain/sdk-go/client"
+	"github.com/katena-chain/sdk-go/entity"
+	"github.com/katena-chain/sdk-go/examples/common"
 )
 
 func main() {
 	// Alice wants to certify an ed25519 signature of an off-chain data
 
+	// Load default configuration
+	settings := common.DefaultSettings()
+
 	// Common Katena network information
-	apiUrl := "https://nodes.test.katena.transchain.io/api/v1"
-	chainID := "katena-chain-test"
+	apiUrl := settings.ApiUrl
+	chainId := settings.ChainId
 
 	// Alice Katena network information
-	aliceSignPrivateKeyBase64 := "7C67DeoLnhI6jvsp3eMksU2Z6uzj8sqZbpgwZqfIyuCZbfoPcitCiCsSp2EzCfkY52Mx58xDOyQLb1OhC7cL5A=="
-	aliceCompanyBcid := "abcdef"
-	aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignPrivateKeyBase64)
+	aliceCompanyBcId := settings.Company.BcId
+	aliceSignKeyInfo := settings.Company.Ed25519Keys["alice"]
+	aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignKeyInfo.PrivateKeyStr)
+	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
 	// Create a Katena API helper
-	transactor := client.NewTransactor(apiUrl, chainID, aliceCompanyBcid, &aliceSignPrivateKey)
+	txSigner := entity.NewTxSigner(aliceSignPrivateKeyId, &aliceSignPrivateKey, aliceCompanyBcId)
+	transactor := client.NewTransactor(apiUrl, chainId, txSigner)
 
 	// Off-chain information Alice wants to send
-	certificateUuid := "2075c941-6876-405b-87d5-13791c0dc53a"
+	certificateId := settings.CertificateId
 	dataSignature := aliceSignPrivateKey.Sign([]byte("off_chain_data_to_sign_from_go"))
 
 	// Send a version 1 of a certificate ed25519 on Katena
-	txStatus, err := transactor.SendCertificateEd25519V1(certificateUuid, aliceSignPrivateKey.GetPublicKey(), dataSignature)
+	txResult, err := transactor.SendCertificateEd25519V1Tx(certificateId, aliceSignPrivateKey.GetPublicKey(), dataSignature)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("Transaction status")
-	fmt.Println(fmt.Sprintf("  Code    : %d", txStatus.Code))
-	fmt.Println(fmt.Sprintf("  Message : %s", txStatus.Message))
+	fmt.Println("Result :")
+	err = common.PrintlnJSON(txResult)
+	if err != nil {
+		panic(err)
+	}
 }

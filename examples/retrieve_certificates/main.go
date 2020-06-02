@@ -10,56 +10,49 @@ package main
 import (
 	"fmt"
 
-	"github.com/transchain/sdk-go/api"
-
 	"github.com/katena-chain/sdk-go/client"
-	"github.com/katena-chain/sdk-go/entity/certify"
+	"github.com/katena-chain/sdk-go/examples/common"
 )
 
 func main() {
-	// Alice wants to retrieve certificates
+	// Alice wants to retrieve txs related to a certificates
+
+	// Load default configuration
+	settings := common.DefaultSettings()
 
 	// Common Katena network information
-	apiUrl := "https://nodes.test.katena.transchain.io/api/v1"
+	apiUrl := settings.ApiUrl
 
 	// Alice Katena network information
-	aliceCompanyBcid := "abcdef"
+	aliceCompanyBcId := settings.Company.BcId
 
 	// Create a Katena API helper
-	transactor := client.NewTransactor(apiUrl, "", "", nil)
+	transactor := client.NewTransactor(apiUrl, "", nil)
 
-	// Certificates uuid Alice wants to retrieve
-	certificateUuid := "2075c941-6876-405b-87d5-13791c0dc53a"
+	// Certificates id Alice wants to retrieve
+	certificateId := settings.CertificateId
 
-	// Retrieve version 1 of certificates from Katena
-	txWrappers, err := transactor.RetrieveCertificates(aliceCompanyBcid, certificateUuid, 1, api.DefaultPerPageParam)
+	// Retrieve txs related to the certificate fqid
+	txResults, err := transactor.RetrieveCertificateTxs(aliceCompanyBcId, certificateId, 1, settings.TxPerPage)
 	if err != nil {
 		panic(err)
 	}
 
-	for _, txWrapper := range txWrappers.Txs {
-		txData := txWrapper.Tx.Data
+	fmt.Println("Tx list :")
+	err = common.PrintlnJSON(txResults)
+	if err != nil {
+		panic(err)
+	}
 
-		fmt.Println("Transaction status")
-		fmt.Println(fmt.Sprintf("  Code    : %d", txWrapper.Status.Code))
-		fmt.Println(fmt.Sprintf("  Message : %s", txWrapper.Status.Message))
+	// Retrieve the last tx related to the certificate fqid
+	txResult, err := transactor.RetrieveLastCertificateTx(aliceCompanyBcId, certificateId)
+	if err != nil {
+		panic(err)
+	}
 
-		switch txData := txData.(type) {
-		case *certify.CertificateRawV1:
-			fmt.Println("CertificateRawV1")
-			fmt.Println(fmt.Sprintf("  Id    : %s", txData.Id))
-			fmt.Println(fmt.Sprintf("  Value : %s", txData.Value))
-			break
-		case *certify.CertificateEd25519V1:
-			fmt.Println("CertificateEd25519V1")
-			fmt.Println(fmt.Sprintf("  Id             : %s", txData.Id))
-			fmt.Println(fmt.Sprintf("  Data signer    : %s", txData.Signer))
-			fmt.Println(fmt.Sprintf("  Data signature : %s", txData.Signature))
-			break
-		default:
-			panic("Unexpected txData type")
-		}
-
-		fmt.Println()
+	fmt.Println("Last Tx :")
+	err = common.PrintlnJSON(txResult)
+	if err != nil {
+		panic(err)
 	}
 }
