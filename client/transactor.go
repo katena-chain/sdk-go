@@ -18,99 +18,114 @@ import (
 	"github.com/katena-chain/sdk-go/entity/account"
 	entityApi "github.com/katena-chain/sdk-go/entity/api"
 	"github.com/katena-chain/sdk-go/entity/certify"
+	"github.com/katena-chain/sdk-go/entity/common"
 )
 
 // Transactor provides helper methods to hide the complexity of Tx creation, signature and API dialog.
 type Transactor struct {
-	apiHandler  *api.Handler
-	chainID     string
-	txSigner    *ed25519.PrivateKey
-	companyBcid string
+	apiHandler *api.Handler
+	chainId    string
+	txSigner   *entity.TxSigner
 }
 
 // Transactor constructor.
-func NewTransactor(apiUrl string, chainID string, companyBcid string, txSigner *ed25519.PrivateKey) *Transactor {
+func NewTransactor(apiUrl string, chainId string, txSigner *entity.TxSigner) *Transactor {
 	return &Transactor{
-		apiHandler:  api.NewHandler(apiUrl),
-		chainID:     chainID,
-		txSigner:    txSigner,
-		companyBcid: companyBcid,
+		apiHandler: api.NewHandler(apiUrl),
+		chainId:    chainId,
+		txSigner:   txSigner,
 	}
 }
 
-// SendCertificateRawV1 creates a CertificateRaw (V1) and sends it to the API.
-func (t Transactor) SendCertificateRawV1(uuid string, value []byte) (*entityApi.TxStatus, error) {
-	certificate := certify.NewCertificateRawV1(entity.FormatTxid(t.companyBcid, uuid), value)
+// SendCertificateRawV1Tx creates a CertificateRawV1 TxData and sends it to the API.
+func (t Transactor) SendCertificateRawV1Tx(id string, value []byte) (*entityApi.SendTxResult, error) {
+	certificate := certify.NewCertificateRawV1(id, value)
 	return t.SendTx(certificate)
 }
 
-// SendCertificateEd25519V1 creates a CertificateEd25519 (V1) and sends it to the API.
-func (t Transactor) SendCertificateEd25519V1(uuid string, signer ed25519.PublicKey, signature ed25519.Signature) (*entityApi.TxStatus, error) {
-	certificate := certify.NewCertificateEd25519V1(entity.FormatTxid(t.companyBcid, uuid), signer, signature)
+// SendCertificateEd25519V1Tx creates a CertificateEd25519V1 TxData and sends it to the API.
+func (t Transactor) SendCertificateEd25519V1Tx(id string, signer ed25519.PublicKey, signature ed25519.Signature) (*entityApi.SendTxResult, error) {
+	certificate := certify.NewCertificateEd25519V1(id, signer, signature)
 	return t.SendTx(certificate)
 }
 
-// SendKeyCreateV1 creates a KeyCreate (V1) and sends it to the API.
-func (t Transactor) SendKeyCreateV1(uuid string, publicKey ed25519.PublicKey, role string) (*entityApi.TxStatus, error) {
-	keyCreate := account.NewKeyCreateV1(entity.FormatTxid(t.companyBcid, uuid), publicKey, role)
-	return t.SendTx(keyCreate)
-}
-
-// SendKeyRevokeV1 creates a KeyRevoke (V1) and sends it to the API.
-func (t Transactor) SendKeyRevokeV1(uuid string, publicKey ed25519.PublicKey) (*entityApi.TxStatus, error) {
-	keyRevoke := account.NewKeyRevokeV1(entity.FormatTxid(t.companyBcid, uuid), publicKey)
-	return t.SendTx(keyRevoke)
-}
-
-// SendSecretNaclBoxV1 creates a SecretNaclBox (V1) and sends it to the API.
-func (t Transactor) SendSecretNaclBoxV1(uuid string, sender nacl.PublicKey, nonce nacl.BoxNonce, content []byte) (*entityApi.TxStatus, error) {
-	secret := certify.NewSecretNaclBoxV1(entity.FormatTxid(t.companyBcid, uuid), sender, nonce, content)
+// SendSecretNaclBoxV1Tx creates a SecretNaclBoxV1 TxData and sends it to the API.
+func (t Transactor) SendSecretNaclBoxV1Tx(id string, sender nacl.PublicKey, nonce nacl.BoxNonce, content []byte) (*entityApi.SendTxResult, error) {
+	secret := certify.NewSecretNaclBoxV1(id, sender, nonce, content)
 	return t.SendTx(secret)
 }
 
-// RetrieveCertificates fetches the API and returns a tx wrapper list or an error.
-func (t Transactor) RetrieveCertificates(companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
-	return t.apiHandler.RetrieveCertificates(entity.FormatTxid(companyBcid, uuid), page, txPerPage)
+// SendKeyCreateV1Tx creates a KeyCreateV1 TxData and sends it to the API.
+func (t Transactor) SendKeyCreateV1Tx(id string, publicKey ed25519.PublicKey, role string) (*entityApi.SendTxResult, error) {
+	keyCreate := account.NewKeyCreateV1(id, publicKey, role)
+	return t.SendTx(keyCreate)
 }
 
-// RetrieveLastCertificate fetches the API and returns a tx wrapper or an error.
-func (t Transactor) RetrieveLastCertificate(companyBcid string, uuid string) (*entityApi.TxWrapper, error) {
-	return t.apiHandler.RetrieveLastCertificate(entity.FormatTxid(companyBcid, uuid))
+// SendKeyRotateV1Tx creates a KeyRotateV1 TxData and sends it to the API.
+func (t Transactor) SendKeyRotateV1Tx(id string, publicKey ed25519.PublicKey) (*entityApi.SendTxResult, error) {
+	keyRotate := account.NewKeyRotateV1(id, publicKey)
+	return t.SendTx(keyRotate)
 }
 
-// RetrieveKeyCreateTxs fetches the API and returns a tx wrapper list or an error.
-func (t Transactor) RetrieveKeyCreateTxs(companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
-	return t.apiHandler.RetrieveTxs(account.GetCategoryKeyCreate(), entity.FormatTxid(companyBcid, uuid), page, txPerPage)
+// SendKeyRevokeV1Tx creates a KeyRevokeV1 TxData and sends it to the API.
+func (t Transactor) SendKeyRevokeV1Tx(id string) (*entityApi.SendTxResult, error) {
+	keyRevoke := account.NewKeyRevokeV1(id)
+	return t.SendTx(keyRevoke)
 }
 
-// RetrieveKeyRevokeTxs fetches the API and returns a tx wrapper list or an error.
-func (t Transactor) RetrieveKeyRevokeTxs(companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
-	return t.apiHandler.RetrieveTxs(account.GetCategoryKeyRevoke(), entity.FormatTxid(companyBcid, uuid), page, txPerPage)
+// RetrieveCertificateTxs fetches the API and returns all txs related to a certificate fqid.
+func (t Transactor) RetrieveCertificateTxs(companyBcId string, id string, page int, txPerPage int) (*entityApi.TxResults, error) {
+	return t.apiHandler.RetrieveCertificateTxs(common.ConcatFqId(companyBcId, id), page, txPerPage)
 }
 
-// RetrieveCompanyKeys fetches the API and returns the list of keyV1 for a company or an error.
-func (t Transactor) RetrieveCompanyKeys(companyBcid string, page int, txPerPage int) ([]*account.KeyV1, error) {
-	return t.apiHandler.RetrieveCompanyKeys(companyBcid, page, txPerPage)
+// RetrieveLastCertificateTx fetches the API and returns the last tx related to a certificate fqid.
+func (t Transactor) RetrieveLastCertificateTx(companyBcId string, id string) (*entityApi.TxResult, error) {
+	return t.apiHandler.RetrieveLastCertificateTx(common.ConcatFqId(companyBcId, id))
 }
 
-// RetrieveSecrets fetches the API and returns a tx wrapper list or an error.
-func (t Transactor) RetrieveSecrets(companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
-	return t.apiHandler.RetrieveSecrets(entity.FormatTxid(companyBcid, uuid), page, txPerPage)
+// RetrieveSecretTxs fetches the API and returns all txs related to a secret fqid.
+func (t Transactor) RetrieveSecretTxs(companyBcId string, id string, page int, txPerPage int) (*entityApi.TxResults, error) {
+	return t.apiHandler.RetrieveSecretTxs(common.ConcatFqId(companyBcId, id), page, txPerPage)
 }
 
-// RetrieveTxs fetches the API and returns a tx wrapper list or an error.
-func (t Transactor) RetrieveTxs(txCategory string, companyBcid string, uuid string, page int, txPerPage int) (*entityApi.TxWrappers, error) {
-	return t.apiHandler.RetrieveTxs(txCategory, entity.FormatTxid(companyBcid, uuid), page, txPerPage)
+// RetrieveLastSecretTx fetches the API and returns the last tx related to a secret fqid.
+func (t Transactor) RetrieveLastSecretTx(companyBcId string, id string) (*entityApi.TxResult, error) {
+	return t.apiHandler.RetrieveLastSecretTx(common.ConcatFqId(companyBcId, id))
+}
+
+// RetrieveKeyTxs fetches the API and returns all txs related to a key fqid.
+func (t Transactor) RetrieveKeyTxs(companyBcId string, id string, page int, txPerPage int) (*entityApi.TxResults, error) {
+	return t.apiHandler.RetrieveKeyTxs(common.ConcatFqId(companyBcId, id), page, txPerPage)
+}
+
+// RetrieveKey fetches the API and returns the last tx related to a key fqid.
+func (t Transactor) RetrieveLastKeyTx(companyBcId string, id string) (*entityApi.TxResult, error) {
+	return t.apiHandler.RetrieveLastKeyTx(common.ConcatFqId(companyBcId, id))
+}
+
+// RetrieveKey fetches the API and return any tx by its hash.
+func (t Transactor) RetrieveTx(hash string) (*entityApi.TxResult, error) {
+	return t.apiHandler.RetrieveTx(hash)
+}
+
+// RetrieveKey fetches the API and returns a key from the state.
+func (t Transactor) RetrieveKey(companyBcId string, id string) (*account.KeyV1, error) {
+	return t.apiHandler.RetrieveKey(common.ConcatFqId(companyBcId, id))
+}
+
+// RetrieveCompanyKeys fetches the API and returns a list of keys for a company from the state.
+func (t Transactor) RetrieveCompanyKeys(companyBcId string, page int, txPerPage int) ([]*account.KeyV1, error) {
+	return t.apiHandler.RetrieveCompanyKeys(companyBcId, page, txPerPage)
 }
 
 // SendTx signs, encodes and send a tx to the Api.
-func (t Transactor) SendTx(txData entity.TxData) (status *entityApi.TxStatus, err error) {
-	if t.txSigner == nil || t.chainID == "" {
+func (t Transactor) SendTx(txData entity.TxData) (status *entityApi.SendTxResult, err error) {
+	if t.txSigner == nil || t.txSigner.PrivateKey == nil || t.chainId == "" {
 		return nil, errors.New("impossible to create txs without a private key or chain id")
 	}
 
-	tx := t.apiHandler.SignTx(t.txSigner, t.chainID, entity.GetCurrentTime(), txData)
-	txBytes, err := t.apiHandler.EncodeTx(tx)
+	tx := api.SignTx(t.txSigner.FqId, t.txSigner.PrivateKey, t.chainId, entity.GetCurrentTime(), txData)
+	txBytes, err := api.EncodeTx(tx)
 	if err != nil {
 		return nil, err
 	}
