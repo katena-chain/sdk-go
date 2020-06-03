@@ -21,6 +21,7 @@ var AvailableTxDataTypes = map[string]reflect.Type{
 	certify.GetCertificateEd25519V1Type(): reflect.TypeOf(certify.CertificateEd25519V1{}),
 	certify.GetSecretNaclBoxV1Type():      reflect.TypeOf(certify.SecretNaclBoxV1{}),
 	account.GetKeyCreateV1Type():          reflect.TypeOf(account.KeyCreateV1{}),
+	account.GetKeyRotateV1Type():          reflect.TypeOf(account.KeyRotateV1{}),
 	account.GetKeyRevokeV1Type():          reflect.TypeOf(account.KeyRevokeV1{}),
 }
 

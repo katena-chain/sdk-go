@@ -54,4 +54,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println("New key info :")
+	fmt.Println(fmt.Sprintf("  Private key : %s", newPrivateKey.String()))
+	fmt.Println(fmt.Sprintf("  Public key  : %s", newPublicKey.String()))
 }
