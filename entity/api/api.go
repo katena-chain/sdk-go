@@ -22,7 +22,7 @@ type TxResults struct {
 // TxResult is returned by a GET request to retrieve a tx with useful information about its processing.
 type TxResult struct {
 	Hash   entity.HexBytes `json:"hash"`
-	Height int64           `json:"height"`
+	Height uint32          `json:"height"`
 	Index  uint32          `json:"index"`
 	Status *TxStatus       `json:"status"`
 	Tx     *entity.Tx      `json:"tx"`

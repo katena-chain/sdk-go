@@ -13,14 +13,14 @@ import (
 
 // TxSigner contains all information about a Tx signer.
 type TxSigner struct {
-	FqId        string
-	PrivateKey  *ed25519.PrivateKey
+	FqId       string
+	PrivateKey *ed25519.PrivateKey
 }
 
 // TxSigner constructor.
 func NewTxSigner(fqId string, privateKey *ed25519.PrivateKey) *TxSigner {
 	return &TxSigner{
-		FqId:        fqId,
-		PrivateKey:  privateKey,
+		FqId:       fqId,
+		PrivateKey: privateKey,
 	}
 }
