@@ -47,7 +47,7 @@ func (kc KeyCreateV1) GetStateIds(signerCompanyBcId string) map[string]string {
 	}
 }
 
-// GetNamespace returns the certify namespace.
+// GetNamespace returns the account namespace.
 func (kc KeyCreateV1) GetNamespace() string {
 	return Namespace
 }
@@ -78,7 +78,7 @@ func (kr KeyRotateV1) GetStateIds(signerCompanyBcId string) map[string]string {
 	}
 }
 
-// GetNamespace returns the certify namespace.
+// GetNamespace returns the account namespace.
 func (kr KeyRotateV1) GetNamespace() string {
 	return Namespace
 }
@@ -107,7 +107,7 @@ func (kr KeyRevokeV1) GetStateIds(signerCompanyBcId string) map[string]string {
 	}
 }
 
-// GetNamespace returns the certify namespace.
+// GetNamespace returns the account namespace.
 func (kr KeyRevokeV1) GetNamespace() string {
 	return Namespace
 }

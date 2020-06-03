@@ -15,6 +15,7 @@ import (
 	"github.com/katena-chain/sdk-go/client"
 	"github.com/katena-chain/sdk-go/entity"
 	"github.com/katena-chain/sdk-go/entity/account"
+	entityCommon "github.com/katena-chain/sdk-go/entity/common"
 	"github.com/katena-chain/sdk-go/examples/common"
 )
 
@@ -35,7 +36,7 @@ func main() {
 	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
 	// Create a Katena API helper
-	txSigner := entity.NewTxSigner(aliceSignPrivateKeyId, &aliceSignPrivateKey, aliceCompanyBcId)
+	txSigner := entity.NewTxSigner(entityCommon.ConcatFqId(aliceCompanyBcId, aliceSignPrivateKeyId), &aliceSignPrivateKey)
 	transactor := client.NewTransactor(apiUrl, chainId, txSigner)
 
 	// Information Alice wants to send

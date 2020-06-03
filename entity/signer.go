@@ -15,14 +15,12 @@ import (
 type TxSigner struct {
 	FqId        string
 	PrivateKey  *ed25519.PrivateKey
-	CompanyBcId string
 }
 
 // TxSigner constructor.
-func NewTxSigner(fqId string, privateKey *ed25519.PrivateKey, companyBcid string) *TxSigner {
+func NewTxSigner(fqId string, privateKey *ed25519.PrivateKey) *TxSigner {
 	return &TxSigner{
 		FqId:        fqId,
 		PrivateKey:  privateKey,
-		CompanyBcId: companyBcid,
 	}
 }
