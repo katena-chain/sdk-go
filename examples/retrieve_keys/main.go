@@ -55,4 +55,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	// Retrieve the last state of a key with that fqid
+	key, err := transactor.RetrieveKey(aliceCompanyBcId, keyId)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Key :")
+	err = common.PrintlnJSON(key)
+	if err != nil {
+		panic(err)
+	}
 }
