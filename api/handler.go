@@ -37,8 +37,10 @@ type Handler struct {
 
 // Handler constructor.
 func NewHandler(apiUrl string) *Handler {
+	client := api.NewFastHttpClient(apiUrl)
+	client.AddHeader(fasthttp.HeaderContentType, "application/json;charset=UTF-8")
 	return &Handler{
-		apiClient: api.NewFastHttpClient(apiUrl),
+		apiClient: client,
 	}
 }
 
