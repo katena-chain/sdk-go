@@ -13,7 +13,6 @@ import (
 	"fmt"
 
 	"github.com/transchain/sdk-go/api"
-	"github.com/transchain/sdk-go/crypto/ed25519"
 	"github.com/valyala/fasthttp"
 
 	"github.com/katena-chain/sdk-go/entity"
@@ -134,7 +133,7 @@ func (h *Handler) RetrieveCompanyKeys(companyBcId string, page int, txPerPage in
 }
 
 // SendTx accepts an encoded tx and sends it to the Api to return its status and its hash.
-func (h *Handler) SendTx(txBytes []byte) (*entityApi.SendTxResult, error) {
+func (h *Handler) SendRawTx(txBytes []byte) (*entityApi.SendTxResult, error) {
 	apiResponse, err := h.SafePost(TxsPath, txBytes)
 	if err != nil {
 		return nil, err
@@ -144,6 +143,21 @@ func (h *Handler) SendTx(txBytes []byte) (*entityApi.SendTxResult, error) {
 		return nil, err
 	}
 	return &txResult, nil
+}
+
+// SendTx creates a tx from a tx data and the provided tx signer info and chain id, signs it, encodes it and sends it
+// to the api.
+func (h *Handler) SendTx(txData entity.TxData, txSigner *entity.TxSigner, chainId string) (status *entityApi.SendTxResult, err error) {
+	if txSigner == nil || txSigner.FqId == "" || txSigner.PrivateKey == nil || chainId == "" {
+		return nil, errors.New("impossible to create txs without a tx signer info or chain id")
+	}
+	// Sign the tx with the current client time.
+	tx := SignTx(txSigner, chainId, entity.GetCurrentTime(), txData)
+	txBytes, err := EncodeTx(tx)
+	if err != nil {
+		return nil, err
+	}
+	return h.SendRawTx(txBytes)
 }
 
 // GetAndFormat fetches the API route and try to unmarshal the response in the provided instance.
@@ -190,15 +204,15 @@ func (h *Handler) SafeGet(route string, queryParams map[string]string) (_ *api.R
 	return h.apiClient.Get(route, nil, queryParams)
 }
 
-// SignTx creates a tx data state, signs it and returns a tx ready to encode and send.
-func SignTx(signerFqId string, privateKey *ed25519.PrivateKey, chainId string, nonceTime entity.Time, txData entity.TxData) *entity.Tx {
+// SignTx creates a tx data state, signs it and returns a tx ready to be encoded and sent.
+func SignTx(txSigner *entity.TxSigner, chainId string, nonceTime entity.Time, txData entity.TxData) *entity.Tx {
 	txDataState := entity.GetTxDataStateBytes(chainId, nonceTime, txData)
-	signature := privateKey.Sign(txDataState)
+	signature := txSigner.PrivateKey.Sign(txDataState)
 
 	return &entity.Tx{
 		NonceTime:  nonceTime,
 		Data:       txData,
-		SignerFqId: signerFqId,
+		SignerFqId: txSigner.FqId,
 		Signature:  signature,
 	}
 }

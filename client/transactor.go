@@ -8,8 +8,6 @@
 package client
 
 import (
-	"errors"
-
 	"github.com/transchain/sdk-go/crypto/ed25519"
 	"github.com/transchain/sdk-go/crypto/nacl"
 
@@ -118,16 +116,8 @@ func (t Transactor) RetrieveCompanyKeys(companyBcId string, page int, txPerPage 
 	return t.apiHandler.RetrieveCompanyKeys(companyBcId, page, txPerPage)
 }
 
-// SendTx signs, encodes and send a tx to the Api.
+// SendTx creates a tx from a tx data and the provided tx signer info and chain id, signs it, encodes it and sends it
+// to the api.
 func (t Transactor) SendTx(txData entity.TxData) (status *entityApi.SendTxResult, err error) {
-	if t.txSigner == nil || t.txSigner.PrivateKey == nil || t.chainId == "" {
-		return nil, errors.New("impossible to create txs without a private key or chain id")
-	}
-
-	tx := api.SignTx(t.txSigner.FqId, t.txSigner.PrivateKey, t.chainId, entity.GetCurrentTime(), txData)
-	txBytes, err := api.EncodeTx(tx)
-	if err != nil {
-		return nil, err
-	}
-	return t.apiHandler.SendTx(txBytes)
+	return t.apiHandler.SendTx(txData, t.txSigner, t.chainId)
 }
