@@ -36,7 +36,7 @@ func main() {
 	bobCryptKeyInfo := settings.OffChain.X25519Keys["bob"]
 	bobCryptPrivateKey := nacl.NewPrivateKeyFromBase64(bobCryptKeyInfo.PrivateKeyStr)
 
-	// Secret uuid Bob wants to retrieve
+	// Secret id Bob wants to retrieve
 	secretId := settings.SecretId
 
 	// Retrieve txs related to the secret fqid

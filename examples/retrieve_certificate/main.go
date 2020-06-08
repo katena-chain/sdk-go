@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	// Alice wants to retrieve txs related to a certificates
+	// Alice wants to retrieve txs related to a certificate
 
 	// Load default configuration
 	settings := common.DefaultSettings()
@@ -29,7 +29,7 @@ func main() {
 	// Create a Katena API helper
 	transactor := client.NewTransactor(apiUrl, "", nil)
 
-	// Certificates id Alice wants to retrieve
+	// Certificate id Alice wants to retrieve
 	certificateId := settings.CertificateId
 
 	// Retrieve txs related to the certificate fqid

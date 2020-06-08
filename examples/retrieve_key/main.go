@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	// Alice wants to retrieve txs related to a key
+	// Alice wants to retrieve a key and its related txs
 
 	// Load default configuration
 	settings := common.DefaultSettings()

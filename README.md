@@ -25,13 +25,14 @@ You can change various settings in the `examples/common/settings.go` file.
 
 Available examples:
 * Send a `Certificate` transaction
-* Retrieve a `Certificate` transaction
-* Retrieve a list of `Certificate` transactions
-* Encrypt and send a `Secret` transaction
-* Retrieve a list of `Secret` transactions and try to decrypt them
+* Send a `Secret` transaction
 * Send a `KeyCreate` transaction
+* Send a `KeyRotate` transaction
 * Send a `KeyRevoke` transaction
-* Retrieve a list of `Keys` for a company
+* Retrieve `Certificate` related transactions
+* Retrieve `Secret` related transactions
+* Retrieve `Key` related transactions and its state
+* Retrieve a list of `Key` states for a company
 
 For instance, to send a certificate:
 ```bash

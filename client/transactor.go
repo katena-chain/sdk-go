@@ -71,6 +71,12 @@ func (t Transactor) SendKeyRevokeV1Tx(id string) (*entityApi.SendTxResult, error
 	return t.SendTx(keyRevoke)
 }
 
+// SendTx creates a tx from a tx data and the provided tx signer info and chain id, signs it, encodes it and sends it
+// to the api.
+func (t Transactor) SendTx(txData entity.TxData) (status *entityApi.SendTxResult, err error) {
+	return t.apiHandler.SendTx(txData, t.txSigner, t.chainId)
+}
+
 // RetrieveCertificateTxs fetches the API and returns all txs related to a certificate fqid.
 func (t Transactor) RetrieveCertificateTxs(companyBcId string, id string, page int, txPerPage int) (*entityApi.TxResults, error) {
 	return t.apiHandler.RetrieveCertificateTxs(common.ConcatFqId(companyBcId, id), page, txPerPage)
@@ -114,10 +120,4 @@ func (t Transactor) RetrieveKey(companyBcId string, id string) (*account.KeyV1, 
 // RetrieveCompanyKeys fetches the API and returns a list of keys for a company from the state.
 func (t Transactor) RetrieveCompanyKeys(companyBcId string, page int, txPerPage int) ([]*account.KeyV1, error) {
 	return t.apiHandler.RetrieveCompanyKeys(companyBcId, page, txPerPage)
-}
-
-// SendTx creates a tx from a tx data and the provided tx signer info and chain id, signs it, encodes it and sends it
-// to the api.
-func (t Transactor) SendTx(txData entity.TxData) (status *entityApi.SendTxResult, err error) {
-	return t.apiHandler.SendTx(txData, t.txSigner, t.chainId)
 }
