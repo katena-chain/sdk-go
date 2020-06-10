@@ -40,10 +40,12 @@ func main() {
 
 	// Off-chain information Alice wants to send
 	certificateId := settings.CertificateId
-	dataSignature := aliceSignPrivateKey.Sign([]byte("off_chain_data_to_sign_from_go"))
+	davidSignKeyInfo := settings.OffChain.Ed25519Keys["david"]
+	davidSignPrivateKey := ed25519.NewPrivateKeyFromBase64(davidSignKeyInfo.PrivateKeyStr)
+	dataSignature := davidSignPrivateKey.Sign([]byte("off_chain_data_to_sign_from_go"))
 
 	// Send a version 1 of a certificate ed25519 on Katena
-	txResult, err := transactor.SendCertificateEd25519V1Tx(certificateId, aliceSignPrivateKey.GetPublicKey(), dataSignature)
+	txResult, err := transactor.SendCertificateEd25519V1Tx(certificateId, davidSignPrivateKey.GetPublicKey(), dataSignature)
 	if err != nil {
 		panic(err)
 	}
