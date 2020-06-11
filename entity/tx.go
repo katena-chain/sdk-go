@@ -9,8 +9,6 @@ package entity
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
 	"reflect"
 
 	"github.com/transchain/sdk-go/crypto/ed25519"
@@ -75,7 +73,10 @@ func (a *Tx) UnmarshalJSON(data []byte) error {
 		}
 		a.Data = txData.(TxData)
 	} else {
-		return errors.New(fmt.Sprintf("unknown tx data type: %s", jsonTx.Data.Type))
+		a.Data = UnknownTxData{
+			Type:  jsonTx.Data.Type,
+			RawMessage: jsonTx.Data.Value,
+		}
 	}
 	return nil
 }

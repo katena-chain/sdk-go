@@ -8,6 +8,7 @@
 package entity
 
 import (
+	"encoding/json"
 	"reflect"
 
 	kcJson "github.com/transchain/sdk-go/json"
@@ -56,4 +57,22 @@ func GetTxDataStateBytes(chainId string, nonceTime Time, txData TxData) []byte {
 		},
 	}
 	return kcJson.MustMarshalAndSortJSON(data)
+}
+
+// UnknownTxData is useful to unmarshal and marshal back a tx data of unknown type.
+type UnknownTxData struct {
+	Type string `json:"-"`
+	json.RawMessage
+}
+
+func (utd UnknownTxData) GetStateIds(signerCompanyBcId string) map[string]string {
+	return map[string]string{}
+}
+
+func (utd UnknownTxData) GetNamespace() string {
+	return ""
+}
+
+func (utd UnknownTxData) GetType() string {
+	return utd.Type
 }
