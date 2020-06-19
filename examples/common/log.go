@@ -10,9 +10,19 @@ package common
 import (
 	"encoding/json"
 	"fmt"
+
+	kcJson "github.com/transchain/sdk-go/json"
+
+	"github.com/katena-chain/sdk-go/entity"
 )
 
 func PrintlnJSON(data interface{}) error {
+	if txData, ok := data.(entity.TxData); ok {
+		data = kcJson.MarshalWrapper{
+			Value: txData,
+			Type:  txData.GetType(),
+		}
+	}
 	encodedData, err := json.MarshalIndent(data, "", "  ")
 	if err != nil {
 		return err

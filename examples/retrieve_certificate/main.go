@@ -55,4 +55,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	// Retrieve the last state of a certificate with that fqid
+	certificate, err := transactor.RetrieveCertificate(aliceCompanyBcId, certificateId)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Certificate :")
+	err = common.PrintlnJSON(certificate)
+	if err != nil {
+		panic(err)
+	}
 }

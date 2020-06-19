@@ -13,6 +13,7 @@ import (
 	"fmt"
 
 	"github.com/transchain/sdk-go/api"
+	kcJson "github.com/transchain/sdk-go/json"
 	"github.com/valyala/fasthttp"
 
 	"github.com/katena-chain/sdk-go/entity"
@@ -112,6 +113,34 @@ func (h *Handler) RetrieveTx(hash string) (*entityApi.TxResult, error) {
 		return nil, err
 	}
 	return &txResult, nil
+}
+
+// RetrieveCertificate fetches the API and returns a certificate from the state.
+func (h *Handler) RetrieveCertificate(fqId string) (entity.TxData, error) {
+	var certificateWrapper kcJson.UnmarshalWrapper
+	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s", StatePath, CertificatesPath, fqId), nil, &certificateWrapper)
+	if err != nil {
+		return nil, err
+	}
+	certificate, err := entity.UnmarshalTxData(&certificateWrapper)
+	if err != nil {
+		return nil, err
+	}
+	return certificate, nil
+}
+
+// RetrieveSecret fetches the API and returns a secret from the state.
+func (h *Handler) RetrieveSecret(fqId string) (entity.TxData, error) {
+	var secretWrapper kcJson.UnmarshalWrapper
+	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s", StatePath, SecretsPath, fqId), nil, &secretWrapper)
+	if err != nil {
+		return nil, err
+	}
+	secret, err := entity.UnmarshalTxData(&secretWrapper)
+	if err != nil {
+		return nil, err
+	}
+	return secret, nil
 }
 
 // RetrieveKey fetches the API and returns a key from the state.

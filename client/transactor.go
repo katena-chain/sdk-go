@@ -112,6 +112,16 @@ func (t Transactor) RetrieveTx(hash string) (*entityApi.TxResult, error) {
 	return t.apiHandler.RetrieveTx(hash)
 }
 
+// RetrieveCertificate fetches the API and returns a certificate from the state.
+func (t Transactor) RetrieveCertificate(companyBcId string, id string) (entity.TxData, error) {
+	return t.apiHandler.RetrieveCertificate(common.ConcatFqId(companyBcId, id))
+}
+
+// RetrieveSecret fetches the API and returns a secret from the state.
+func (t Transactor) RetrieveSecret(companyBcId string, id string) (entity.TxData, error) {
+	return t.apiHandler.RetrieveSecret(common.ConcatFqId(companyBcId, id))
+}
+
 // RetrieveKey fetches the API and returns a key from the state.
 func (t Transactor) RetrieveKey(companyBcId string, id string) (*account.KeyV1, error) {
 	return t.apiHandler.RetrieveKey(common.ConcatFqId(companyBcId, id))

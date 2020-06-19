@@ -9,7 +9,6 @@ package entity
 
 import (
 	"encoding/json"
-	"reflect"
 
 	"github.com/transchain/sdk-go/crypto/ed25519"
 	kcJson "github.com/transchain/sdk-go/json"
@@ -60,23 +59,16 @@ func (a Tx) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON converts an encoded Tx and create the concrete TxData according to its type information.
 func (a *Tx) UnmarshalJSON(data []byte) error {
-	jsonTx := &unmarshalTxAlias{
+	jsonTx := unmarshalTxAlias{
 		TxAlias: (*TxAlias)(a),
 	}
 	if err := json.Unmarshal(data, &jsonTx); err != nil {
 		return err
 	}
-	if txDataType, ok := AvailableTxDataTypes[jsonTx.Data.Type]; ok {
-		txData := reflect.New(txDataType).Interface()
-		if err := json.Unmarshal(jsonTx.Data.Value, txData); err != nil {
-			return err
-		}
-		a.Data = txData.(TxData)
-	} else {
-		a.Data = UnknownTxData{
-			Type:  jsonTx.Data.Type,
-			RawMessage: jsonTx.Data.Value,
-		}
+	txData, err := UnmarshalTxData(&jsonTx.Data)
+	if err != nil {
+		return err
 	}
+	a.Data = txData
 	return nil
 }

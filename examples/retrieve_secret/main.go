@@ -63,11 +63,23 @@ func main() {
 		panic(err)
 	}
 
-	txData := txResult.Tx.Data.(*certify.SecretNaclBoxV1)
+	// Retrieve the last state of a secret with that fqid
+	secret, err := transactor.RetrieveSecret(aliceCompanyBcId, secretId)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Secret :")
+	err = common.PrintlnJSON(secret)
+	if err != nil {
+		panic(err)
+	}
+
+	secretNaclBox := secret.(*certify.SecretNaclBoxV1)
 	// Bob will use its private key and the sender's public key (needs to be Alice's) to decrypt a message
-	decryptedContent, ok := bobCryptPrivateKey.Open(txData.Content, txData.Nonce, txData.Sender)
+	decryptedContent, ok := bobCryptPrivateKey.Open(secretNaclBox.Content, secretNaclBox.Nonce, secretNaclBox.Sender)
 	if !ok {
 		decryptedContent = []byte("Unable to decrypt")
 	}
-	fmt.Println(fmt.Sprintf("Decrypted content for last Tx : %s", decryptedContent))
+	fmt.Println(fmt.Sprintf("Decrypted content : %s", decryptedContent))
 }

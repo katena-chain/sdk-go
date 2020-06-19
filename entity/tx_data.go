@@ -39,6 +39,22 @@ type TxData interface {
 	GetType() string
 }
 
+// UnmarshalTxData accepts a wrapper and tries to unmarshal its value according to its string type.
+func UnmarshalTxData(txDataWrapper *kcJson.UnmarshalWrapper) (TxData, error) {
+	if txDataType, ok := AvailableTxDataTypes[txDataWrapper.Type]; ok {
+		txData := reflect.New(txDataType).Interface()
+		if err := json.Unmarshal(txDataWrapper.Value, txData); err != nil {
+			return nil, err
+		}
+		return txData.(TxData), nil
+	} else {
+		return UnknownTxData{
+			Type:  txDataWrapper.Type,
+			RawMessage: txDataWrapper.Value,
+		}, nil
+	}
+}
+
 // txDataState wraps a TxData and additional values in order to define a unique state ready to be signed.
 type txDataState struct {
 	ChainId   string                `json:"chain_id"`
