@@ -11,10 +11,9 @@ import (
 	"encoding/json"
 	"reflect"
 
-	kcJson "github.com/transchain/sdk-go/json"
-
 	"github.com/katena-chain/sdk-go/entity/account"
 	"github.com/katena-chain/sdk-go/entity/certify"
+	"github.com/katena-chain/sdk-go/serializer"
 )
 
 var AvailableTxDataTypes = map[string]reflect.Type{
@@ -40,7 +39,7 @@ type TxData interface {
 }
 
 // UnmarshalTxData accepts a wrapper and tries to unmarshal its value according to its string type.
-func UnmarshalTxData(txDataWrapper *kcJson.UnmarshalWrapper) (TxData, error) {
+func UnmarshalTxData(txDataWrapper *serializer.UnmarshalWrapper) (TxData, error) {
 	if txDataType, ok := AvailableTxDataTypes[txDataWrapper.Type]; ok {
 		txData := reflect.New(txDataType).Interface()
 		if err := json.Unmarshal(txDataWrapper.Value, txData); err != nil {
@@ -49,7 +48,7 @@ func UnmarshalTxData(txDataWrapper *kcJson.UnmarshalWrapper) (TxData, error) {
 		return txData.(TxData), nil
 	} else {
 		return UnknownTxData{
-			Type:  txDataWrapper.Type,
+			Type:       txDataWrapper.Type,
 			RawMessage: txDataWrapper.Value,
 		}, nil
 	}
@@ -57,9 +56,9 @@ func UnmarshalTxData(txDataWrapper *kcJson.UnmarshalWrapper) (TxData, error) {
 
 // txDataState wraps a TxData and additional values in order to define a unique state ready to be signed.
 type txDataState struct {
-	ChainId   string                `json:"chain_id"`
-	NonceTime Time                  `json:"nonce_time"`
-	Data      kcJson.MarshalWrapper `json:"data"`
+	ChainId   string                    `json:"chain_id"`
+	NonceTime Time                      `json:"nonce_time"`
+	Data      serializer.MarshalWrapper `json:"data"`
 }
 
 // GetTxDataStateBytes returns the sorted and marshaled json representation of a TxData ready to be signed.
@@ -67,12 +66,12 @@ func GetTxDataStateBytes(chainId string, nonceTime Time, txData TxData) []byte {
 	data := txDataState{
 		ChainId:   chainId,
 		NonceTime: nonceTime,
-		Data: kcJson.MarshalWrapper{
+		Data: serializer.MarshalWrapper{
 			Type:  txData.GetType(),
 			Value: txData,
 		},
 	}
-	return kcJson.MustMarshalAndSortJSON(data)
+	return serializer.MustMarshalAndSortJSON(data)
 }
 
 // UnknownTxData is useful to unmarshal and marshal back a tx data of unknown type.

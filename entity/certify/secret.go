@@ -8,8 +8,7 @@
 package certify
 
 import (
-	"github.com/transchain/sdk-go/crypto/nacl"
-
+	"github.com/katena-chain/sdk-go/crypto/nacl"
 	"github.com/katena-chain/sdk-go/entity/common"
 )
 

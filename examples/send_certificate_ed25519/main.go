@@ -10,8 +10,6 @@ package main
 import (
 	"fmt"
 
-	"github.com/transchain/sdk-go/crypto/ed25519"
-
 	"github.com/katena-chain/sdk-go/client"
 	"github.com/katena-chain/sdk-go/entity"
 	entityCommon "github.com/katena-chain/sdk-go/entity/common"
@@ -31,7 +29,7 @@ func main() {
 	// Alice Katena network information
 	aliceCompanyBcId := settings.Company.BcId
 	aliceSignKeyInfo := settings.Company.Ed25519Keys["alice"]
-	aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignKeyInfo.PrivateKeyStr)
+	aliceSignPrivateKey := common.CreatePrivateKeyEd25519FromBase64(aliceSignKeyInfo.PrivateKeyStr)
 	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
 	// Create a Katena API helper
@@ -41,7 +39,7 @@ func main() {
 	// Off-chain information Alice wants to send
 	certificateId := settings.CertificateId
 	davidSignKeyInfo := settings.OffChain.Ed25519Keys["david"]
-	davidSignPrivateKey := ed25519.NewPrivateKeyFromBase64(davidSignKeyInfo.PrivateKeyStr)
+	davidSignPrivateKey := common.CreatePrivateKeyEd25519FromBase64(davidSignKeyInfo.PrivateKeyStr)
 	dataSignature := davidSignPrivateKey.Sign([]byte("off_chain_data_to_sign_from_go"))
 
 	// Send a version 1 of a certificate ed25519 on Katena

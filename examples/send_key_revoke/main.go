@@ -10,8 +10,6 @@ package main
 import (
 	"fmt"
 
-	"github.com/transchain/sdk-go/crypto/ed25519"
-
 	"github.com/katena-chain/sdk-go/client"
 	"github.com/katena-chain/sdk-go/entity"
 	entityCommon "github.com/katena-chain/sdk-go/entity/common"
@@ -31,7 +29,7 @@ func main() {
 	// Alice Katena network information
 	aliceCompanyBcId := settings.Company.BcId
 	aliceSignKeyInfo := settings.Company.Ed25519Keys["alice"]
-	aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignKeyInfo.PrivateKeyStr)
+	aliceSignPrivateKey := common.CreatePrivateKeyEd25519FromBase64(aliceSignKeyInfo.PrivateKeyStr)
 	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
 	// Create a Katena API helper

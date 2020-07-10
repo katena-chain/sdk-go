@@ -10,8 +10,6 @@ package main
 import (
 	"fmt"
 
-	"github.com/transchain/sdk-go/crypto/nacl"
-
 	"github.com/katena-chain/sdk-go/client"
 	"github.com/katena-chain/sdk-go/entity/certify"
 	"github.com/katena-chain/sdk-go/examples/common"
@@ -34,7 +32,7 @@ func main() {
 
 	// Nacl box information
 	bobCryptKeyInfo := settings.OffChain.X25519Keys["bob"]
-	bobCryptPrivateKey := nacl.NewPrivateKeyFromBase64(bobCryptKeyInfo.PrivateKeyStr)
+	bobCryptPrivateKey := common.CreatePrivateKeyX25519FromBase64(bobCryptKeyInfo.PrivateKeyStr)
 
 	// Secret id Bob wants to retrieve
 	secretId := settings.SecretId

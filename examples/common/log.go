@@ -11,14 +11,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	kcJson "github.com/transchain/sdk-go/json"
-
 	"github.com/katena-chain/sdk-go/entity"
+	"github.com/katena-chain/sdk-go/serializer"
 )
 
 func PrintlnJSON(data interface{}) error {
 	if txData, ok := data.(entity.TxData); ok {
-		data = kcJson.MarshalWrapper{
+		data = serializer.MarshalWrapper{
 			Value: txData,
 			Type:  txData.GetType(),
 		}

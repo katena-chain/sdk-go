@@ -8,10 +8,9 @@
 package client
 
 import (
-	"github.com/transchain/sdk-go/crypto/ed25519"
-	"github.com/transchain/sdk-go/crypto/nacl"
-
 	"github.com/katena-chain/sdk-go/api"
+	"github.com/katena-chain/sdk-go/crypto/ed25519"
+	"github.com/katena-chain/sdk-go/crypto/nacl"
 	"github.com/katena-chain/sdk-go/entity"
 	"github.com/katena-chain/sdk-go/entity/account"
 	entityApi "github.com/katena-chain/sdk-go/entity/api"
@@ -72,7 +71,7 @@ func (t Transactor) SendKeyRevokeV1Tx(id string) (*entityApi.SendTxResult, error
 }
 
 // SendTx creates a tx from a tx data and the provided tx signer info and chain id, signs it, encodes it and sends it
-// to the api.
+// to the API.
 func (t Transactor) SendTx(txData entity.TxData) (status *entityApi.SendTxResult, err error) {
 	return t.apiHandler.SendTx(txData, t.txSigner, t.chainId)
 }

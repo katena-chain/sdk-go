@@ -8,7 +8,7 @@
 package entity
 
 import (
-	"github.com/transchain/sdk-go/crypto/ed25519"
+	"github.com/katena-chain/sdk-go/crypto/ed25519"
 )
 
 // TxSigner contains all information about a Tx signer.

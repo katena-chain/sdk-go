@@ -10,9 +10,6 @@ package main
 import (
 	"fmt"
 
-	"github.com/transchain/sdk-go/crypto/ed25519"
-	"github.com/transchain/sdk-go/crypto/nacl"
-
 	"github.com/katena-chain/sdk-go/client"
 	"github.com/katena-chain/sdk-go/entity"
 	entityCommon "github.com/katena-chain/sdk-go/entity/common"
@@ -32,14 +29,14 @@ func main() {
 	// Alice Katena network information
 	aliceCompanyBcId := settings.Company.BcId
 	aliceSignKeyInfo := settings.Company.Ed25519Keys["alice"]
-	aliceSignPrivateKey := ed25519.NewPrivateKeyFromBase64(aliceSignKeyInfo.PrivateKeyStr)
+	aliceSignPrivateKey := common.CreatePrivateKeyEd25519FromBase64(aliceSignKeyInfo.PrivateKeyStr)
 	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
 	// Nacl box information
 	bobCryptKeyInfo := settings.OffChain.X25519Keys["bob"]
-	bobCryptPublicKey := nacl.NewPublicKeyFromBase64(bobCryptKeyInfo.PublicKeyStr)
+	bobCryptPublicKey := common.CreatePublicKeyX25519FromBase64(bobCryptKeyInfo.PublicKeyStr)
 	aliceCryptKeyInfo := settings.OffChain.X25519Keys["alice"]
-	aliceCryptPrivateKey := nacl.NewPrivateKeyFromBase64(aliceCryptKeyInfo.PrivateKeyStr)
+	aliceCryptPrivateKey := common.CreatePrivateKeyX25519FromBase64(aliceCryptKeyInfo.PrivateKeyStr)
 
 	// Create a Katena API helper
 	txSigner := entity.NewTxSigner(entityCommon.ConcatFqId(aliceCompanyBcId, aliceSignPrivateKeyId), &aliceSignPrivateKey)

@@ -12,13 +12,13 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/transchain/sdk-go/api"
-	kcJson "github.com/transchain/sdk-go/json"
 	"github.com/valyala/fasthttp"
 
 	"github.com/katena-chain/sdk-go/entity"
 	"github.com/katena-chain/sdk-go/entity/account"
 	entityApi "github.com/katena-chain/sdk-go/entity/api"
+	"github.com/katena-chain/sdk-go/entity/common"
+	"github.com/katena-chain/sdk-go/serializer"
 )
 
 const (
@@ -33,12 +33,12 @@ const (
 
 // Handler provides helper methods to send and retrieve txs without directly interacting with the HTTP Client.
 type Handler struct {
-	apiClient api.Client
+	apiClient Client
 }
 
 // Handler constructor.
 func NewHandler(apiUrl string) *Handler {
-	client := api.NewFastHttpClient(apiUrl)
+	client := NewFastHttpClient(apiUrl)
 	client.AddHeader(fasthttp.HeaderContentType, "application/json;charset=UTF-8")
 	return &Handler{
 		apiClient: client,
@@ -48,7 +48,7 @@ func NewHandler(apiUrl string) *Handler {
 // RetrieveCertificateTxs fetches the API to return all txs related to a certificate fqid.
 func (h *Handler) RetrieveCertificateTxs(fqId string, page int, txPerPage int) (*entityApi.TxResults, error) {
 	var txResults entityApi.TxResults
-	err := h.GetAndFormat(fmt.Sprintf("%s/%s", CertificatesPath, fqId), api.GetPaginationQueryParams(page, txPerPage), &txResults)
+	err := h.GetAndFormat(fmt.Sprintf("%s/%s", CertificatesPath, fqId), common.GetPaginationQueryParams(page, txPerPage), &txResults)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (h *Handler) RetrieveLastCertificateTx(fqId string) (*entityApi.TxResult, e
 // RetrieveSecretTxs fetches the API to return all txs related to a secret fqid.
 func (h *Handler) RetrieveSecretTxs(fqId string, page int, txPerPage int) (*entityApi.TxResults, error) {
 	var txResults entityApi.TxResults
-	err := h.GetAndFormat(fmt.Sprintf("%s/%s", SecretsPath, fqId), api.GetPaginationQueryParams(page, txPerPage), &txResults)
+	err := h.GetAndFormat(fmt.Sprintf("%s/%s", SecretsPath, fqId), common.GetPaginationQueryParams(page, txPerPage), &txResults)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (h *Handler) RetrieveLastSecretTx(fqId string) (*entityApi.TxResult, error)
 // RetrieveKeyTxs fetches the API to return all txs related to a key fqid.
 func (h *Handler) RetrieveKeyTxs(fqId string, page int, txPerPage int) (*entityApi.TxResults, error) {
 	var txResults entityApi.TxResults
-	err := h.GetAndFormat(fmt.Sprintf("%s/%s", KeysPath, fqId), api.GetPaginationQueryParams(page, txPerPage), &txResults)
+	err := h.GetAndFormat(fmt.Sprintf("%s/%s", KeysPath, fqId), common.GetPaginationQueryParams(page, txPerPage), &txResults)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (h *Handler) RetrieveTx(hash string) (*entityApi.TxResult, error) {
 
 // RetrieveCertificate fetches the API and returns a certificate from the state.
 func (h *Handler) RetrieveCertificate(fqId string) (entity.TxData, error) {
-	var certificateWrapper kcJson.UnmarshalWrapper
+	var certificateWrapper serializer.UnmarshalWrapper
 	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s", StatePath, CertificatesPath, fqId), nil, &certificateWrapper)
 	if err != nil {
 		return nil, err
@@ -131,7 +131,7 @@ func (h *Handler) RetrieveCertificate(fqId string) (entity.TxData, error) {
 
 // RetrieveSecret fetches the API and returns a secret from the state.
 func (h *Handler) RetrieveSecret(fqId string) (entity.TxData, error) {
-	var secretWrapper kcJson.UnmarshalWrapper
+	var secretWrapper serializer.UnmarshalWrapper
 	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s", StatePath, SecretsPath, fqId), nil, &secretWrapper)
 	if err != nil {
 		return nil, err
@@ -156,7 +156,7 @@ func (h *Handler) RetrieveKey(fqId string) (*account.KeyV1, error) {
 // RetrieveCompanyKeys fetches the API and returns a list of keys for a company from the state.
 func (h *Handler) RetrieveCompanyKeys(companyBcId string, page int, txPerPage int) ([]*account.KeyV1, error) {
 	var keys []*account.KeyV1
-	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s%s", StatePath, CompaniesPath, companyBcId, KeysPath), api.GetPaginationQueryParams(page, txPerPage), &keys)
+	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s%s", StatePath, CompaniesPath, companyBcId, KeysPath), common.GetPaginationQueryParams(page, txPerPage), &keys)
 	if err != nil {
 		return nil, err
 	}
@@ -204,7 +204,7 @@ func (h *Handler) GetAndFormat(route string, queryParams map[string]string, inst
 }
 
 // SafePost calls the api handler post method and recover if it panics.
-func (h *Handler) SafePost(route string, body []byte) (_ *api.RawResponse, katenaError error) {
+func (h *Handler) SafePost(route string, body []byte) (_ *entityApi.RawResponse, katenaError error) {
 	defer func() {
 		if r := recover(); r != nil {
 			var ok bool
@@ -220,7 +220,7 @@ func (h *Handler) SafePost(route string, body []byte) (_ *api.RawResponse, katen
 }
 
 // SafeGet calls the api handler get method and recover if it panics.
-func (h *Handler) SafeGet(route string, queryParams map[string]string) (_ *api.RawResponse, katenaError error) {
+func (h *Handler) SafeGet(route string, queryParams map[string]string) (_ *entityApi.RawResponse, katenaError error) {
 	defer func() {
 		if r := recover(); r != nil {
 			var ok bool
@@ -255,7 +255,7 @@ func EncodeTx(tx *entity.Tx) ([]byte, error) {
 
 // UnmarshalApiResponse tries to parse the api response body into the provided interface if the API returns a 200 or a
 // 202 HTTP code. If not, it tries to parse it in a PublicError.
-func UnmarshalApiResponse(apiResponse *api.RawResponse, dest interface{}) error {
+func UnmarshalApiResponse(apiResponse *entityApi.RawResponse, dest interface{}) error {
 	if apiResponse.StatusCode == fasthttp.StatusOK || apiResponse.StatusCode == fasthttp.StatusAccepted {
 		if err := json.Unmarshal(apiResponse.Body, dest); err != nil {
 			return err

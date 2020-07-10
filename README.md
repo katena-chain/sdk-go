@@ -29,8 +29,8 @@ Available examples:
 * Send a `KeyCreate` transaction
 * Send a `KeyRotate` transaction
 * Send a `KeyRevoke` transaction
-* Retrieve `Certificate` related transactions
-* Retrieve `Secret` related transactions
+* Retrieve `Certificate` related transactions and its state
+* Retrieve `Secret` related transactions and its state
 * Retrieve `Key` related transactions and its state
 * Retrieve a list of `Key` states for a company
 

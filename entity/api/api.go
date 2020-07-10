@@ -13,6 +13,12 @@ import (
 	"github.com/katena-chain/sdk-go/entity"
 )
 
+// Response is a fasthttp.Response wrapper.
+type RawResponse struct {
+	StatusCode int
+	Body       []byte
+}
+
 // TxResults is returned by a GET request to retrieve a list of TxResult with the total txs available.
 type TxResults struct {
 	Txs   []*TxResult `json:"txs"`

@@ -10,8 +10,8 @@ package entity
 import (
 	"encoding/json"
 
-	"github.com/transchain/sdk-go/crypto/ed25519"
-	kcJson "github.com/transchain/sdk-go/json"
+	"github.com/katena-chain/sdk-go/crypto/ed25519"
+	"github.com/katena-chain/sdk-go/serializer"
 )
 
 // Tx wraps a TxData with its signature, its signer id and a nonce time.
@@ -32,13 +32,13 @@ type TxAlias Tx
 
 // marshalTxAlias wraps a Tx for marshalling operations.
 type marshalTxAlias struct {
-	Data kcJson.MarshalWrapper `json:"data" validate:"required"`
+	Data serializer.MarshalWrapper `json:"data" validate:"required"`
 	*TxAlias
 }
 
 // unmarshalTxAlias wraps a Tx for unmarshalling operations.
 type unmarshalTxAlias struct {
-	Data kcJson.UnmarshalWrapper `json:"data" validate:"required"`
+	Data serializer.UnmarshalWrapper `json:"data" validate:"required"`
 	*TxAlias
 }
 
@@ -50,7 +50,7 @@ func (a Tx) MarshalJSON() ([]byte, error) {
 			SignerFqId: a.SignerFqId,
 			Signature:  a.Signature,
 		},
-		Data: kcJson.MarshalWrapper{
+		Data: serializer.MarshalWrapper{
 			Type:  a.Data.GetType(),
 			Value: a.Data,
 		},
