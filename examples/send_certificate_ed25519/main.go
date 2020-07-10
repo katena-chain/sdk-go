@@ -29,7 +29,7 @@ func main() {
 	// Alice Katena network information
 	aliceCompanyBcId := settings.Company.BcId
 	aliceSignKeyInfo := settings.Company.Ed25519Keys["alice"]
-	aliceSignPrivateKey := common.CreatePrivateKeyEd25519FromBase64(aliceSignKeyInfo.PrivateKeyStr)
+	aliceSignPrivateKey := entityCommon.CreatePrivateKeyEd25519FromBase64(aliceSignKeyInfo.PrivateKeyStr)
 	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
 	// Create a Katena API helper
@@ -39,7 +39,7 @@ func main() {
 	// Off-chain information Alice wants to send
 	certificateId := settings.CertificateId
 	davidSignKeyInfo := settings.OffChain.Ed25519Keys["david"]
-	davidSignPrivateKey := common.CreatePrivateKeyEd25519FromBase64(davidSignKeyInfo.PrivateKeyStr)
+	davidSignPrivateKey := entityCommon.CreatePrivateKeyEd25519FromBase64(davidSignKeyInfo.PrivateKeyStr)
 	dataSignature := davidSignPrivateKey.Sign([]byte("off_chain_data_to_sign_from_go"))
 
 	// Send a version 1 of a certificate ed25519 on Katena

@@ -12,6 +12,7 @@ import (
 
 	"github.com/katena-chain/sdk-go/client"
 	"github.com/katena-chain/sdk-go/entity/certify"
+	entityCommon "github.com/katena-chain/sdk-go/entity/common"
 	"github.com/katena-chain/sdk-go/examples/common"
 )
 
@@ -32,7 +33,7 @@ func main() {
 
 	// Nacl box information
 	bobCryptKeyInfo := settings.OffChain.X25519Keys["bob"]
-	bobCryptPrivateKey := common.CreatePrivateKeyX25519FromBase64(bobCryptKeyInfo.PrivateKeyStr)
+	bobCryptPrivateKey := entityCommon.CreatePrivateKeyX25519FromBase64(bobCryptKeyInfo.PrivateKeyStr)
 
 	// Secret id Bob wants to retrieve
 	secretId := settings.SecretId

@@ -29,14 +29,14 @@ func main() {
 	// Alice Katena network information
 	aliceCompanyBcId := settings.Company.BcId
 	aliceSignKeyInfo := settings.Company.Ed25519Keys["alice"]
-	aliceSignPrivateKey := common.CreatePrivateKeyEd25519FromBase64(aliceSignKeyInfo.PrivateKeyStr)
+	aliceSignPrivateKey := entityCommon.CreatePrivateKeyEd25519FromBase64(aliceSignKeyInfo.PrivateKeyStr)
 	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
 	// Nacl box information
 	bobCryptKeyInfo := settings.OffChain.X25519Keys["bob"]
-	bobCryptPublicKey := common.CreatePublicKeyX25519FromBase64(bobCryptKeyInfo.PublicKeyStr)
+	bobCryptPublicKey := entityCommon.CreatePublicKeyX25519FromBase64(bobCryptKeyInfo.PublicKeyStr)
 	aliceCryptKeyInfo := settings.OffChain.X25519Keys["alice"]
-	aliceCryptPrivateKey := common.CreatePrivateKeyX25519FromBase64(aliceCryptKeyInfo.PrivateKeyStr)
+	aliceCryptPrivateKey := entityCommon.CreatePrivateKeyX25519FromBase64(aliceCryptKeyInfo.PrivateKeyStr)
 
 	// Create a Katena API helper
 	txSigner := entity.NewTxSigner(entityCommon.ConcatFqId(aliceCompanyBcId, aliceSignPrivateKeyId), &aliceSignPrivateKey)

@@ -29,7 +29,7 @@ func main() {
 	// Alice Katena network information
 	aliceCompanyBcId := settings.Company.BcId
 	aliceSignKeyInfo := settings.Company.Ed25519Keys["alice"]
-	aliceSignPrivateKey := common.CreatePrivateKeyEd25519FromBase64(aliceSignKeyInfo.PrivateKeyStr)
+	aliceSignPrivateKey := entityCommon.CreatePrivateKeyEd25519FromBase64(aliceSignKeyInfo.PrivateKeyStr)
 	aliceSignPrivateKeyId := aliceSignKeyInfo.Id
 
 	// Create a Katena API helper
@@ -38,7 +38,7 @@ func main() {
 
 	// Information Alice wants to send
 	keyId := settings.KeyId
-	newPrivateKey := common.GenerateNewPrivateKeyEd25519()
+	newPrivateKey := entityCommon.GenerateNewPrivateKeyEd25519()
 	newPublicKey := newPrivateKey.GetPublicKey()
 
 	// Send a version 1 of a key rotate on Katena
