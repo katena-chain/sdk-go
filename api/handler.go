@@ -48,7 +48,7 @@ func NewHandler(apiUrl string) *Handler {
 // RetrieveCertificateTxs fetches the API to return all txs related to a certificate fqid.
 func (h *Handler) RetrieveCertificateTxs(fqId string, page int, txPerPage int) (*entityApi.TxResults, error) {
 	var txResults entityApi.TxResults
-	err := h.GetAndFormat(fmt.Sprintf("%s/%s", CertificatesPath, fqId), common.GetPaginationQueryParams(page, txPerPage), &txResults)
+	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s", TxsPath, CertificatesPath, fqId), common.GetPaginationQueryParams(page, txPerPage), &txResults)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (h *Handler) RetrieveCertificateTxs(fqId string, page int, txPerPage int) (
 // RetrieveLastCertificateTx fetches the API to return the last tx related to a certificate fqid.
 func (h *Handler) RetrieveLastCertificateTx(fqId string) (*entityApi.TxResult, error) {
 	var txResult entityApi.TxResult
-	err := h.GetAndFormat(fmt.Sprintf("%s/%s%s", CertificatesPath, fqId, LastPath), nil, &txResult)
+	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s%s", TxsPath, CertificatesPath, fqId, LastPath), nil, &txResult)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (h *Handler) RetrieveLastCertificateTx(fqId string) (*entityApi.TxResult, e
 // RetrieveSecretTxs fetches the API to return all txs related to a secret fqid.
 func (h *Handler) RetrieveSecretTxs(fqId string, page int, txPerPage int) (*entityApi.TxResults, error) {
 	var txResults entityApi.TxResults
-	err := h.GetAndFormat(fmt.Sprintf("%s/%s", SecretsPath, fqId), common.GetPaginationQueryParams(page, txPerPage), &txResults)
+	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s", TxsPath, SecretsPath, fqId), common.GetPaginationQueryParams(page, txPerPage), &txResults)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (h *Handler) RetrieveSecretTxs(fqId string, page int, txPerPage int) (*enti
 // RetrieveLastSecretTxs fetches the API to return the last tx related to a secret fqid.
 func (h *Handler) RetrieveLastSecretTx(fqId string) (*entityApi.TxResult, error) {
 	var txResult entityApi.TxResult
-	err := h.GetAndFormat(fmt.Sprintf("%s/%s%s", SecretsPath, fqId, LastPath), nil, &txResult)
+	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s%s", TxsPath, SecretsPath, fqId, LastPath), nil, &txResult)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func (h *Handler) RetrieveLastSecretTx(fqId string) (*entityApi.TxResult, error)
 // RetrieveKeyTxs fetches the API to return all txs related to a key fqid.
 func (h *Handler) RetrieveKeyTxs(fqId string, page int, txPerPage int) (*entityApi.TxResults, error) {
 	var txResults entityApi.TxResults
-	err := h.GetAndFormat(fmt.Sprintf("%s/%s", KeysPath, fqId), common.GetPaginationQueryParams(page, txPerPage), &txResults)
+	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s", TxsPath, KeysPath, fqId), common.GetPaginationQueryParams(page, txPerPage), &txResults)
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (h *Handler) RetrieveKeyTxs(fqId string, page int, txPerPage int) (*entityA
 // RetrieveLastKeyTxs fetches the API to return the last txs related to a key fqid.
 func (h *Handler) RetrieveLastKeyTx(fqId string) (*entityApi.TxResult, error) {
 	var txResult entityApi.TxResult
-	err := h.GetAndFormat(fmt.Sprintf("%s/%s%s", KeysPath, fqId, LastPath), nil, &txResult)
+	err := h.GetAndFormat(fmt.Sprintf("%s%s/%s%s", TxsPath, KeysPath, fqId, LastPath), nil, &txResult)
 	if err != nil {
 		return nil, err
 	}
